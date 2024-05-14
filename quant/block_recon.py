@@ -100,8 +100,7 @@ def block_reconstruction(model: QuantModel, fp_model: QuantModel, block: BaseQua
 
     loss_mode = 'relaxation'
     rec_loss = opt_mode
-    loss_func = LossFunction(block, round_loss=loss_mode, weight=weight, max_count=iters, rec_loss=rec_loss,
-                             b_range=b_range, decay_start=0, warmup=warmup, p=p, lam=lamb_r, T=T)
+    loss_func = LossFunction(block, round_loss=loss_mode, weight=weight, max_count=iters, rec_loss=rec_loss,b_range=b_range, decay_start=0, warmup=warmup, p=p, lam=lamb_r, T=T)
     device = 'cuda'
     sz = cached_inps.size(0)
     for i in range(iters):

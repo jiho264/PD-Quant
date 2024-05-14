@@ -19,11 +19,11 @@ def round_ste(x: torch.Tensor):
     return (x.round() - x).detach() + x
 
 
-def lp_loss(pred, tgt, p=2.0, reduction='none'):
+def lp_loss(pred, tgt, p=2.0, reduction="none"):
     """
     loss function measured in L_p Norm
     """
-    if reduction == 'none':
+    if reduction == "none":
         return (pred - tgt).abs().pow(p).sum(1).mean()
     else:
         return (pred - tgt).abs().pow(p).mean()
@@ -43,35 +43,41 @@ class UniformAffineQuantizer(nn.Module):
     :param prob: for qdrop;
     """
 
-    def __init__(self, n_bits: int = 8, symmetric: bool = False, channel_wise: bool = False,
-                 scale_method: str = 'minmax',
-                 leaf_param: bool = False, prob: float = 1.0):
+    def __init__(
+        self,
+        n_bits: int = 8,
+        symmetric: bool = False,
+        channel_wise: bool = False,
+        scale_method: str = "minmax",
+        leaf_param: bool = False,
+        prob: float = 1.0,
+    ):
         super(UniformAffineQuantizer, self).__init__()
         self.sym = symmetric
         if self.sym:
             raise NotImplementedError
-        assert 2 <= n_bits <= 8, 'bitwidth not supported'
+        assert 2 <= n_bits <= 8, "bitwidth not supported"
         self.n_bits = n_bits
-        self.n_levels = 2 ** self.n_bits
+        self.n_levels = 2**self.n_bits
         self.delta = 1.0
         self.zero_point = 0.0
         self.inited = True
 
-        '''if leaf_param, use EMA to set scale'''
+        """if leaf_param, use EMA to set scale"""
         self.leaf_param = leaf_param
         self.channel_wise = channel_wise
         self.eps = torch.tensor(1e-8, dtype=torch.float32)
 
-        '''mse params'''
-        self.scale_method = 'mse'
+        """mse params"""
+        self.scale_method = "mse"
         self.one_side_dist = None
         self.num = 100
 
-        '''for activation quantization'''
+        """for activation quantization"""
         self.running_min = None
         self.running_max = None
 
-        '''do like dropout'''
+        """do like dropout"""
         self.prob = prob
         self.is_training = False
 
@@ -89,9 +95,13 @@ class UniformAffineQuantizer(nn.Module):
     def forward(self, x: torch.Tensor):
         if self.inited is False:
             if self.leaf_param:
-                self.delta, self.zero_point = self.init_quantization_scale(x.clone().detach(), self.channel_wise)
+                self.delta, self.zero_point = self.init_quantization_scale(
+                    x.clone().detach(), self.channel_wise
+                )
             else:
-                self.delta, self.zero_point = self.init_quantization_scale(x.clone().detach(), self.channel_wise)
+                self.delta, self.zero_point = self.init_quantization_scale(
+                    x.clone().detach(), self.channel_wise
+                )
 
         # start quantization
         x_int = round_ste(x / self.delta) + self.zero_point
@@ -145,14 +155,14 @@ class UniformAffineQuantizer(nn.Module):
         else:
             x_min, x_max = torch._aminmax(x)
         xrange = x_max - x_min
-        best_score = torch.zeros_like(x_min) + (1e+10)
+        best_score = torch.zeros_like(x_min) + (1e10)
         best_min = x_min.clone()
         best_max = x_max.clone()
         # enumerate xrange
         for i in range(1, self.num + 1):
             tmp_min = torch.zeros_like(x_min)
             tmp_max = xrange / self.num * i
-            tmp_delta = (tmp_max - tmp_min) / (2 ** self.n_bits - 1)
+            tmp_delta = (tmp_max - tmp_min) / (2**self.n_bits - 1)
             # enumerate zp
             for zp in range(0, self.n_levels):
                 new_min = tmp_min - zp * tmp_delta
@@ -171,14 +181,14 @@ class UniformAffineQuantizer(nn.Module):
         else:
             x_min, x_max = torch._aminmax(x)
         xrange = torch.max(x_min.abs(), x_max)
-        best_score = torch.zeros_like(x_min) + (1e+10)
+        best_score = torch.zeros_like(x_min) + (1e10)
         best_min = x_min.clone()
         best_max = x_max.clone()
         # enumerate xrange
         for i in range(1, self.num + 1):
             thres = xrange / self.num * i
-            new_min = torch.zeros_like(x_min) if self.one_side_dist == 'pos' else -thres
-            new_max = torch.zeros_like(x_max) if self.one_side_dist == 'neg' else thres
+            new_min = torch.zeros_like(x_min) if self.one_side_dist == "pos" else -thres
+            new_max = torch.zeros_like(x_max) if self.one_side_dist == "neg" else thres
             x_q = self.quantize(x, new_max, new_min)
             score = self.lp_loss(x, x_q, 2.4)
             best_min = torch.where(score < best_score, new_min, best_min)
@@ -187,11 +197,15 @@ class UniformAffineQuantizer(nn.Module):
         return best_min, best_max
 
     def get_x_min_x_max(self, x):
-        if self.scale_method != 'mse':
+        if self.scale_method != "mse":
             raise NotImplementedError
         if self.one_side_dist is None:
-            self.one_side_dist = 'pos' if x.min() >= 0.0 else 'neg' if x.max() <= 0.0 else 'no'
-        if self.one_side_dist != 'no' or self.sym:  # one-side distribution or symmetric value for 1-d search
+            self.one_side_dist = (
+                "pos" if x.min() >= 0.0 else "neg" if x.max() <= 0.0 else "no"
+            )
+        if (
+            self.one_side_dist != "no" or self.sym
+        ):  # one-side distribution or symmetric value for 1-d search
             best_min, best_max = self.perform_1D_search(x)
         else:  # 2-d search
             best_min, best_max = self.perform_2D_search(x)
@@ -203,7 +217,9 @@ class UniformAffineQuantizer(nn.Module):
         x_min, x_max = self.get_x_min_x_max(x)
         return self.calculate_qparams(x_min, x_max)
 
-    def init_quantization_scale(self, x_clone: torch.Tensor, channel_wise: bool = False):
+    def init_quantization_scale(
+        self, x_clone: torch.Tensor, channel_wise: bool = False
+    ):
         if channel_wise:
             # determine the scale and zero point channel-by-channel
             delta, zero_point = self.init_quantization_scale_channel(x_clone)
@@ -216,13 +232,13 @@ class UniformAffineQuantizer(nn.Module):
         return delta, zero_point
 
     def bitwidth_refactor(self, refactored_bit: int):
-        assert 2 <= refactored_bit <= 8, 'bitwidth not supported'
+        assert 2 <= refactored_bit <= 8, "bitwidth not supported"
         self.n_bits = refactored_bit
-        self.n_levels = 2 ** self.n_bits
+        self.n_levels = 2**self.n_bits
 
     @torch.jit.export
     def extra_repr(self):
-        return 'bit={}, is_training={}, inited={}'.format(
+        return "bit={}, is_training={}, inited={}".format(
             self.n_bits, self.is_training, self.inited
         )
 
@@ -233,12 +249,21 @@ class QuantModule(nn.Module):
     To activate quantization, please use set_quant_state function.
     """
 
-    def __init__(self, org_module: Union[nn.Conv2d, nn.Linear], weight_quant_params: dict = {},
-                 act_quant_params: dict = {}, disable_act_quant=False):
+    def __init__(
+        self,
+        org_module: Union[nn.Conv2d, nn.Linear],
+        weight_quant_params: dict = {},
+        act_quant_params: dict = {},
+        disable_act_quant=False,
+    ):
         super(QuantModule, self).__init__()
         if isinstance(org_module, nn.Conv2d):
-            self.fwd_kwargs = dict(stride=org_module.stride, padding=org_module.padding,
-                                   dilation=org_module.dilation, groups=org_module.groups)
+            self.fwd_kwargs = dict(
+                stride=org_module.stride,
+                padding=org_module.padding,
+                dilation=org_module.dilation,
+                groups=org_module.groups,
+            )
             self.fwd_func = F.conv2d
         else:
             self.fwd_kwargs = dict()
@@ -288,6 +313,8 @@ class QuantModule(nn.Module):
 
     @torch.jit.export
     def extra_repr(self):
-        return 'wbit={}, abit={}, disable_act_quant={}'.format(
-            self.weight_quantizer.n_bits, self.act_quantizer.n_bits, self.disable_act_quant
+        return "wbit={}, abit={}, disable_act_quant={}".format(
+            self.weight_quantizer.n_bits,
+            self.act_quantizer.n_bits,
+            self.disable_act_quant,
         )
