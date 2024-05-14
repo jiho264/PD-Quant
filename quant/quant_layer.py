@@ -148,12 +148,12 @@ class UniformAffineQuantizer(nn.Module):
     def perform_2D_search(self, x):
         if self.channel_wise:
             y = torch.flatten(x, 1)
-            x_min, x_max = torch._aminmax(y, 1)
+            x_min, x_max = torch.aminmax(y, dim=1)
             # may also have the one side distribution in some channels
             x_max = torch.max(x_max, torch.zeros_like(x_max))
             x_min = torch.min(x_min, torch.zeros_like(x_min))
         else:
-            x_min, x_max = torch._aminmax(x)
+            x_min, x_max = torch.aminmax(x)
         xrange = x_max - x_min
         best_score = torch.zeros_like(x_min) + (1e10)
         best_min = x_min.clone()
@@ -177,9 +177,9 @@ class UniformAffineQuantizer(nn.Module):
     def perform_1D_search(self, x):
         if self.channel_wise:
             y = torch.flatten(x, 1)
-            x_min, x_max = torch._aminmax(y, 1)
+            x_min, x_max = torch.aminmax(y, dim=1)
         else:
-            x_min, x_max = torch._aminmax(x)
+            x_min, x_max = torch.aminmax(x)
         xrange = torch.max(x_min.abs(), x_max)
         best_score = torch.zeros_like(x_min) + (1e10)
         best_min = x_min.clone()

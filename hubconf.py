@@ -9,12 +9,12 @@ import torch
 
 dependencies = ["torch"]
 model_path = {
-    "resnet18": "/home/tmp/resnet18_imagenet.pth.tar",
-    "resnet50": "/home/tmp/resnet50_imagenet.pth.tar",
-    "mbv2": "/home/tmp/mobilenetv2.pth.tar",
-    "reg600m": "/home/tmp/regnet_600m.pth.tar",
-    "reg3200m": "/home/tmp/regnet_3200m.pth.tar",
-    "mnasnet": "/home/tmp/mnasnet.pth.tar",
+    "resnet18": "pre-trained/resnet18_imagenet.pth.tar",
+    "resnet50": "pre-trained/resnet50_imagenet.pth.tar",
+    "mbv2": "pre-trained/mobilenetv2.pth.tar",
+    "reg600m": "pre-trained/regnet_600m.pth.tar",
+    "reg3200m": "pre-trained/regnet_3200m.pth.tar",
+    "mnasnet": "pre-trained/mnasnet.pth.tar",
 }
 
 

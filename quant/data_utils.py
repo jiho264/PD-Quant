@@ -237,7 +237,7 @@ class GetDcFpLayerInpOut:
         para_input.requires_grad = True
         optimizer = optim.Adam([para_input], lr=self.bn_lr)
         scheduler = optim.lr_scheduler.ReduceLROnPlateau(
-            optimizer, min_lr=1e-5, verbose=False, patience=100
+            optimizer, min_lr=1e-5, patience=100
         )
         iters = 500
         for iter in range(iters):
@@ -267,9 +267,16 @@ class GetDcFpLayerInpOut:
             total_loss.backward()
             optimizer.step()
             scheduler.step(total_loss.item())
-            # if (iter+1) % 500 == 0:
-            #     print('Total loss:\t{:.3f} (mse:{:.3f}, mean:{:.3f}, std:{:.3f})\tcount={}'.format(
-            #     float(total_loss), float(constraint_loss), float(mean_loss), float(std_loss), iter))
+            if (iter + 1) % 500 == 0:
+                print(
+                    "Total loss:\t{:.3f} (mse:{:.3f}, mean:{:.3f}, std:{:.3f})\tcount={}".format(
+                        float(total_loss),
+                        float(constraint_loss),
+                        float(mean_loss),
+                        float(std_loss),
+                        iter,
+                    )
+                )
 
         with torch.no_grad():
             out_fp = self.layer(para_input)

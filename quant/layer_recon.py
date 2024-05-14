@@ -126,7 +126,10 @@ def layer_reconstruction(
     """activation"""
     if layer.act_quantizer.delta is not None:
         layer.act_quantizer.delta = torch.nn.Parameter(
-            torch.tensor(layer.act_quantizer.delta)
+            # torch.tensor(layer.act_quantizer.delta)
+            layer.act_quantizer.delta.clone()
+            .detach()
+            .requires_grad_(True)
         )
         a_para += [layer.act_quantizer.delta]
     """set up drop"""

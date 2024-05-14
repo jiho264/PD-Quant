@@ -1,10 +1,13 @@
 *.so
 *.egg
 *.egg-info
-*.log
+# *.log
 *.pyc
 *.npy
 *.pth
 .DS_Store
 __pycache__
 model_zoo
+
+**/pre-trained/**
+**.pth.tar

@@ -25,12 +25,27 @@ def find_unquantized_module(model: torch.nn.Module, module_list: list = [], name
             find_unquantized_module(module, module_list, name_list)
     return module_list[1:], name_list[1:]
 
-def block_reconstruction(model: QuantModel, fp_model: QuantModel, block: BaseQuantBlock, fp_block: BaseQuantBlock,
-                        cali_data: torch.Tensor, batch_size: int = 32, iters: int = 20000, weight: float = 0.01, 
-                        opt_mode: str = 'mse', b_range: tuple = (20, 2),
-                        warmup: float = 0.0, p: float = 2.0, lr: float = 4e-5,
-                        input_prob: float = 1.0, keep_gpu: bool = True, 
-                        lamb_r: float = 0.2, T: float = 7.0, bn_lr: float = 1e-3, lamb_c=0.02):
+def block_reconstruction(
+        model: QuantModel, 
+        fp_model: QuantModel, 
+        block: BaseQuantBlock, 
+        fp_block: BaseQuantBlock,
+        cali_data: torch.Tensor,
+        batch_size: int = 32, 
+        iters: int = 20000, 
+        weight: float = 0.01, 
+        opt_mode: str = 'mse', 
+        b_range: tuple = (20, 2),
+        warmup: float = 0.0, 
+        p: float = 2.0, 
+        lr: float = 4e-5,
+        input_prob: float = 1.0, 
+        keep_gpu: bool = True, 
+        lamb_r: float = 0.2, 
+        T: float = 7.0, 
+        bn_lr: float = 1e-3, 
+        lamb_c=0.02
+    ):
     """
     Reconstruction to optimize the output from each block.
 
@@ -54,10 +69,8 @@ def block_reconstruction(model: QuantModel, fp_model: QuantModel, block: BaseQua
     """
 
     '''get input and set scale'''
-    cached_inps = get_init(model, block, cali_data, batch_size=batch_size, 
-                                        input_prob=True, keep_gpu=keep_gpu)
-    cached_outs, cached_output, cur_syms = get_dc_fp_init(fp_model, fp_block, cali_data, batch_size=batch_size, 
-                                        input_prob=True, keep_gpu=keep_gpu, bn_lr=bn_lr, lamb=lamb_c)
+    cached_inps = get_init(model, block, cali_data, batch_size=batch_size, input_prob=True, keep_gpu=keep_gpu)
+    cached_outs, cached_output, cur_syms = get_dc_fp_init(fp_model, fp_block, cali_data, batch_size=batch_size, input_prob=True, keep_gpu=keep_gpu, bn_lr=bn_lr, lamb=lamb_c)
     set_act_quantize_params(block, cali_data=cached_inps[:min(256, cached_inps.size(0))])
 
     '''set state'''
@@ -80,8 +93,7 @@ def block_reconstruction(model: QuantModel, fp_model: QuantModel, block: BaseQua
     for module in block.modules():
         '''weight'''
         if isinstance(module, QuantModule):
-            module.weight_quantizer = AdaRoundQuantizer(uaq=module.weight_quantizer, round_mode=round_mode,
-                                                        weight_tensor=module.org_weight.data)
+            module.weight_quantizer = AdaRoundQuantizer(uaq=module.weight_quantizer, round_mode=round_mode, weight_tensor=module.org_weight.data)
             module.weight_quantizer.soft_targets = True
             w_para += [module.weight_quantizer.alpha]
         '''activation'''
@@ -100,7 +112,7 @@ def block_reconstruction(model: QuantModel, fp_model: QuantModel, block: BaseQua
 
     loss_mode = 'relaxation'
     rec_loss = opt_mode
-    loss_func = LossFunction(block, round_loss=loss_mode, weight=weight, max_count=iters, rec_loss=rec_loss,b_range=b_range, decay_start=0, warmup=warmup, p=p, lam=lamb_r, T=T)
+    loss_func = LossFunction(block, round_loss=loss_mode, weight=weight, max_count=iters, rec_loss=rec_loss, b_range=b_range, decay_start=0, warmup=warmup, p=p, lam=lamb_r, T=T)
     device = 'cuda'
     sz = cached_inps.size(0)
     for i in range(iters):
@@ -160,17 +172,18 @@ def block_reconstruction(model: QuantModel, fp_model: QuantModel, block: BaseQua
 
 class LossFunction:
     def __init__(self,
-                 block: BaseQuantBlock,
-                 round_loss: str = 'relaxation',
-                 weight: float = 1.,
-                 rec_loss: str = 'mse',
-                 max_count: int = 2000,
-                 b_range: tuple = (10, 2),
-                 decay_start: float = 0.0,
-                 warmup: float = 0.0,
-                 p: float = 2.,
-                 lam: float = 1.0,
-                 T: float = 7.0):
+            block: BaseQuantBlock,
+            round_loss: str = 'relaxation',
+            weight: float = 1.,
+            rec_loss: str = 'mse',
+            max_count: int = 2000,
+            b_range: tuple = (10, 2),
+            decay_start: float = 0.0,
+            warmup: float = 0.0,
+            p: float = 2.,
+            lam: float = 1.0,
+            T: float = 7.0
+        ):
 
         self.block = block
         self.round_loss = round_loss
@@ -181,8 +194,7 @@ class LossFunction:
         self.lam = lam
         self.T = T
 
-        self.temp_decay = LinearTempDecay(max_count, rel_start_decay=warmup + (1 - warmup) * decay_start,
-                                          start_b=b_range[0], end_b=b_range[1])
+        self.temp_decay = LinearTempDecay(max_count, rel_start_decay=warmup + (1 - warmup) * decay_start,start_b=b_range[0], end_b=b_range[1])
         self.count = 0
         self.pd_loss = torch.nn.KLDivLoss(reduction='batchmean')
 
