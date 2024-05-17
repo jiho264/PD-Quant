@@ -10,6 +10,8 @@ lamb_c=0.02
 
 python main_imagenet.py \
     --data_path data/ImageNet \
+    --batch_size 16 \
+    --num_samples 256 \
     --arch $arch \
     --n_bits_w $w_bits \
     --n_bits_a $a_bits \
@@ -17,7 +19,7 @@ python main_imagenet.py \
     --T $T \
     --lamb_c $lamb_c \
     --workers 8 \
-    | tee "logs/resnet18_W"$w_bits"A"$a_bits".log"
+    | tee "logs/resnet18_W"$w_bits"A"$a_bits"batch16_calib256.log"
 
 
 

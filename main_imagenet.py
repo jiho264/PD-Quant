@@ -141,7 +141,7 @@ def get_train_samples(train_loader, num_samples):
 
 
 if __name__ == "__main__":
-
+    _start_main = time.time()
     parser = argparse.ArgumentParser(
         description="running parameters",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
