@@ -596,3 +596,12 @@ Total loss:	177.048 (rec:146.713, pd:0.069, round:30.265)	b=2.56	count=19500
 Total loss:	157.331 (rec:149.059, pd:0.080, round:8.193)	b=2.00	count=20000
 Reconstruction for layer fc
 Start correcting 32 batches of data!
+
+====================================================================================
+
+My suggestion is to use the following formula to correct the data:
+  tmp = (Afp - mu_hat) * std_hat
+  DC = tmp * std + mu
+
+- ERROR OCCURED! in FC layer.
+- And, This DC method had more higher loss on each blocks than the previous one.
