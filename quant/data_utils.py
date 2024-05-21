@@ -284,3 +284,70 @@ class GetDcFpLayerInpOut:
         if self.input_prob:
             return out_fp.detach(), output_fp.detach(), para_input.detach()
         return out_fp.detach(), output_fp.detach()
+
+    # def __call__(self, model_input):
+    #     """My DC"""
+    #     self.model.set_quant_state(False, False)
+    #     handle = self.layer.register_forward_hook(self.data_saver)
+    #     hooks = []
+    #     hook_handles = []
+    #     for name, module in self.layer.named_modules():
+    #         if isinstance(module, nn.BatchNorm2d):
+    #             hook = input_hook()
+    #             hooks.append(hook)
+    #             hook_handles.append(module.register_forward_hook(hook.hook))
+    #     assert len(hooks) == len(self.bn_stats)
+
+    #     if self.bn_stats == []:
+    #         """FC layer dose not have BN layer, so we do not need to correct it."""
+    #         return self._call_for_fc(model_input)
+
+    #     with torch.no_grad():
+    #         try:
+    #             """output_fp == FINAL OUTPUT OF FP MODEL"""
+    #             output_fp = self.model(model_input.to(self.device))
+    #         except StopForwardException:
+    #             pass
+    #         if self.input_prob:
+    #             """input_sym == INPUT OF QUANTIZED {block or layer}"""
+    #             input_sym = self.data_saver.input_store[0].detach()
+
+    #     handle.remove()
+    #     """para_input == INPUT OF FP MODEL"""
+    #     para_input = input_sym.data.clone()
+    #     para_input = para_input.to(self.device)
+    #     para_input.requires_grad = True
+
+    #     self.layer.zero_grad()
+    #     for hook in hooks:
+    #         hook.clear()
+
+    #     out_fp = self.layer(para_input)
+
+    #     for num, (bn_stat, hook) in enumerate(zip(self.bn_stats, hooks)):
+
+    #         tmp_input = hook.inputs[0]
+    #         bn_mean, bn_std = bn_stat[0], bn_stat[1]
+    #         tmp_mean = torch.mean(
+    #             tmp_input.view(tmp_input.size(0), tmp_input.size(1), -1), dim=2
+    #         )
+    #         tmp_std = torch.sqrt(
+    #             torch.var(
+    #                 tmp_input.view(tmp_input.size(0), tmp_input.size(1), -1), dim=2
+    #             )
+    #             + self.eps
+    #         )
+    #         tmp_mean = tmp_mean.unsqueeze(2).unsqueeze(3)
+    #         tmp_std = tmp_std.unsqueeze(2).unsqueeze(3)
+    #         tmp_input = (tmp_input - tmp_mean) / tmp_std
+
+    #         bn_mean = bn_mean.unsqueeze(0).unsqueeze(2).unsqueeze(3)
+    #         bn_std = bn_std.unsqueeze(0).unsqueeze(2).unsqueeze(3)
+    #         tmp_input = tmp_input * bn_std + bn_mean
+    #         out_fp = tmp_input
+
+    #     assert out_fp is not None
+
+    #     if self.input_prob:
+    #         return out_fp.detach(), output_fp.detach(), para_input.detach()
+    #     return out_fp.detach(), output_fp.detach()
