@@ -1,7 +1,7 @@
 # Default arguments
 seed=1005
 arch="resnet18"
-batch_size=32
+batch_size=64
 workers=8
 data_path="data/ImageNet"
 
@@ -11,8 +11,8 @@ channel_wise=True
 n_bits_a=4
 
 # Weight calibration parameters
-num_samples=256
-iters_w=1000
+num_samples=1024
+iters_w=20000
 weight=0.01
 
 b_start=20
@@ -33,7 +33,7 @@ bn_lr=1e-3
 lamb_c=0.02
 
 # Logging arguments to a file
-log_file="logs/resnet18/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterw${iters_w}_myDC.log"
+log_file="logs/${arch}/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterw${iters_w}_fromCheckPoint.log"
 # Clear the log file
 > $log_file
 echo "START : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $log_file
@@ -82,7 +82,7 @@ echo "--------------------------------------------------------------------------
 echo "" >> $log_file
 
 # Execute the main script
-python main_imagenet.py \
+python main_imagenet_fromCheckPoint.py \
     --seed $seed \
     --arch $arch \
     --batch_size $batch_size \
@@ -111,12 +111,3 @@ python main_imagenet.py \
     | tee -a $log_file
 
 echo "END : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $log_file
-
-
-
-
-
-
-
-
-

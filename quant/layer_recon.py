@@ -51,6 +51,7 @@ def layer_reconstruction(
     T: float = 7.0,
     bn_lr: float = 1e-3,
     lamb_c=0.02,
+    fromCheckPoint=False,
 ):
     """
     Reconstruction to optimize the output from each layer.
@@ -74,28 +75,29 @@ def layer_reconstruction(
     :param lamb_c: hyper-parameter for DC
     """
 
-    """get input and set scale"""
-    cached_inps = get_init(
-        model,
-        layer,
-        cali_data,
-        batch_size=batch_size,
-        input_prob=True,
-        keep_gpu=keep_gpu,
-    )
-    cached_outs, cached_output, cur_syms = get_dc_fp_init(
-        fp_model,
-        fp_layer,
-        cali_data,
-        batch_size=batch_size,
-        input_prob=True,
-        keep_gpu=keep_gpu,
-        bn_lr=bn_lr,
-        lamb=lamb_c,
-    )
-    set_act_quantize_params(
-        layer, cali_data=cached_inps[: min(256, cached_inps.size(0))]
-    )
+    if fromCheckPoint != True:
+        """get input and set scale"""
+        cached_inps = get_init(
+            model,
+            layer,
+            cali_data,
+            batch_size=batch_size,
+            input_prob=True,
+            keep_gpu=keep_gpu,
+        )
+        cached_outs, cached_output, cur_syms = get_dc_fp_init(
+            fp_model,
+            fp_layer,
+            cali_data,
+            batch_size=batch_size,
+            input_prob=True,
+            keep_gpu=keep_gpu,
+            bn_lr=bn_lr,
+            lamb=lamb_c,
+        )
+        set_act_quantize_params(
+            layer, cali_data=cached_inps[: min(256, cached_inps.size(0))]
+        )
 
     """set state"""
     cur_weight, cur_act = True, True
@@ -155,6 +157,10 @@ def layer_reconstruction(
         lam=lamb_r,
         T=T,
     )
+
+    if fromCheckPoint == True:
+        return None
+
     device = "cuda"
     sz = cached_inps.size(0)
     for i in range(iters):

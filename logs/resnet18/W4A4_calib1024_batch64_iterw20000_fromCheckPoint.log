@@ -1,0 +1,90 @@
+START : 2024-05-22 19:08:40
+
+General parameters for data and model
+- seed = 1005 (default = 1005)
+- arch = resnet18
+- batch_size = 64 (default = 64)
+- workers = 8 (default = 4)
+- data_path = data/ImageNet
+
+Quantization parameters
+- n_bits_w = 4 (default = 4)
+- channel_wise = True (default = True)
+- n_bits_a = 4 (default = 4)
+- disable_8bit_head_stem = not use (action = 'store_true')
+
+Weight calibration parameters
+- num_samples = 1024 (default = 1024)
+- iters_w = 20000 (default = 20000)
+- weight = 0.01 (default = 0.01)
+- keep_cpu = not use (action = 'store_true')
+- b_start = 20 (default = 20)
+- b_end = 2 (default = 2)
+- warmup = 0.2 (default = 0.2)
+
+Activation calibration parameters
+- lr = 4e-5 (default = 4e-5)
+- init_wmode = mse (default = 'mse', choices = ['minmax', 'mse', 'minmax_scale'])
+- init_amode = mse (default = 'mse', choices = ['minmax', 'mse', 'minmax_scale'])
+- prob = 0.5 (default = 0.5)
+- input_prob = 0.5 (default = 0.5)
+- lamb_r = 0.1 (default = 0.1)
+- T = 4.0 (default = 4.0)
+- bn_lr = 1e-3 (default = 1e-3)
+- lamb_c = 0.02 (default = 0.02)
+
+-------------------------------------------------------------------------------------------
+
+==> Using Pytorch Dataset
+Test: [  0/782]	Time  3.428 ( 3.428)	Acc@1  85.94 ( 85.94)	Acc@5  95.31 ( 95.31)	InferenceSpeed (ms)  3.428 ( 3.428)
+Test: [100/782]	Time  2.032 ( 4.052)	Acc@1  85.94 ( 78.12)	Acc@5  98.44 ( 93.04)	InferenceSpeed (ms)  2.032 ( 4.052)
+Test: [200/782]	Time  1.999 ( 4.674)	Acc@1  81.25 ( 78.08)	Acc@5  95.31 ( 94.16)	InferenceSpeed (ms)  1.999 ( 4.674)
+Test: [300/782]	Time  2.247 ( 4.356)	Acc@1  76.56 ( 77.98)	Acc@5  98.44 ( 94.19)	InferenceSpeed (ms)  2.247 ( 4.356)
+Test: [400/782]	Time  2.041 ( 4.280)	Acc@1  68.75 ( 75.00)	Acc@5  95.31 ( 92.55)	InferenceSpeed (ms)  2.041 ( 4.280)
+Test: [500/782]	Time  2.021 ( 4.126)	Acc@1  79.69 ( 73.40)	Acc@5  93.75 ( 91.33)	InferenceSpeed (ms)  2.021 ( 4.126)
+Test: [600/782]	Time  2.133 ( 4.057)	Acc@1  78.12 ( 72.18)	Acc@5  90.62 ( 90.58)	InferenceSpeed (ms)  2.133 ( 4.057)
+Test: [700/782]	Time  2.057 ( 4.183)	Acc@1  70.31 ( 71.10)	Acc@5  90.62 ( 89.94)	InferenceSpeed (ms)  2.057 ( 4.183)
+ * Acc@1 71.014 Acc@5 89.946 Inference Speed 4.137 ms/batch
+Full Precision accuracy: 71.01399993896484
+Reconstruction for layer conv1
+Init alpha to be FP32
+Reconstruction for block 0
+Init alpha to be FP32
+Init alpha to be FP32
+Reconstruction for block 1
+Init alpha to be FP32
+Init alpha to be FP32
+Reconstruction for block 0
+Init alpha to be FP32
+Init alpha to be FP32
+Init alpha to be FP32
+Reconstruction for block 1
+Init alpha to be FP32
+Init alpha to be FP32
+Reconstruction for block 0
+Init alpha to be FP32
+Init alpha to be FP32
+Init alpha to be FP32
+Reconstruction for block 1
+Init alpha to be FP32
+Init alpha to be FP32
+Reconstruction for block 0
+Init alpha to be FP32
+Init alpha to be FP32
+Init alpha to be FP32
+Reconstruction for block 1
+Init alpha to be FP32
+Init alpha to be FP32
+Reconstruction for layer fc
+Init alpha to be FP32
+Test: [  0/782]	Time  7.571 ( 7.571)	Acc@1  89.06 ( 89.06)	Acc@5  90.62 ( 90.62)	InferenceSpeed (ms)  7.571 ( 7.571)
+Test: [100/782]	Time  6.383 ( 9.083)	Acc@1  84.38 ( 76.19)	Acc@5  96.88 ( 92.00)	InferenceSpeed (ms)  6.383 ( 9.083)
+Test: [200/782]	Time  6.124 ( 9.062)	Acc@1  76.56 ( 75.70)	Acc@5  93.75 ( 93.30)	InferenceSpeed (ms)  6.124 ( 9.062)
+Test: [300/782]	Time  6.071 ( 8.801)	Acc@1  81.25 ( 75.97)	Acc@5  98.44 ( 93.38)	InferenceSpeed (ms)  6.071 ( 8.801)
+Test: [400/782]	Time 15.365 ( 8.613)	Acc@1  70.31 ( 72.95)	Acc@5  93.75 ( 91.62)	InferenceSpeed (ms) 15.365 ( 8.613)
+Test: [500/782]	Time 22.187 ( 8.686)	Acc@1  82.81 ( 71.44)	Acc@5  92.19 ( 90.41)	InferenceSpeed (ms) 22.187 ( 8.686)
+Test: [600/782]	Time  6.271 ( 8.902)	Acc@1  76.56 ( 70.28)	Acc@5  89.06 ( 89.61)	InferenceSpeed (ms)  6.271 ( 8.902)
+Test: [700/782]	Time 22.060 ( 9.037)	Acc@1  70.31 ( 69.27)	Acc@5  92.19 ( 88.94)	InferenceSpeed (ms) 22.060 ( 9.037)
+ * Acc@1 69.192 Acc@5 88.926 Inference Speed 8.926 ms/batch
+Full quantization (W4A4) accuracy: 69.19200134277344
+END : 2024-05-22 19:10:25

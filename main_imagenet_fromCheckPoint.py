@@ -97,32 +97,48 @@ def validate_model(val_loader, model, device=None, print_freq=100):
     batch_time = AverageMeter("Time", ":6.3f")
     top1 = AverageMeter("Acc@1", ":6.2f")
     top5 = AverageMeter("Acc@5", ":6.2f")
-    progress = ProgressMeter(len(val_loader), [batch_time, top1, top5], prefix="Test: ")
+    inference_speed = AverageMeter("InferenceSpeed (ms)", ":6.3f")
+    progress = ProgressMeter(
+        len(val_loader), [batch_time, top1, top5, inference_speed], prefix="Test: "
+    )
 
     # switch to evaluate mode
     model.eval()
 
-    end = time.time()
+    # model loading...
+    for i, (images, target) in enumerate(val_loader):
+        images = images.to(device)
+        target = target.to(device)
+        output = model(images)
+        break
+
     for i, (images, target) in enumerate(val_loader):
         images = images.to(device)
         target = target.to(device)
 
         # compute output
+        end = time.time()
         output = model(images)
+
+        # measure elapsed time for inference in milliseconds
+        inference_time = (time.time() - end) * 1000
+        inference_speed.update(inference_time)
+        batch_time.update(inference_time)
+        end = time.time()
 
         # measure accuracy and record loss
         acc1, acc5 = accuracy(output, target, topk=(1, 5))
         top1.update(acc1[0], images.size(0))
         top5.update(acc5[0], images.size(0))
 
-        # measure elapsed time
-        batch_time.update(time.time() - end)
-        end = time.time()
-
         if i % print_freq == 0:
             progress.display(i)
 
-    print(" * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}".format(top1=top1, top5=top5))
+    print(
+        " * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f} Inference Speed {inference_speed.avg:.3f} ms/batch".format(
+            top1=top1, top5=top5, inference_speed=inference_speed
+        )
+    )
 
     return top1.avg
 
@@ -266,6 +282,9 @@ if __name__ == "__main__":
     cnn = eval("hubconf.{}(pretrained=True)".format(args.arch))
     cnn.cuda()
     cnn.eval()
+
+    print("Full Precision accuracy: {}".format(validate_model(test_loader, cnn)))
+
     fp_model = copy.deepcopy(cnn)
     fp_model.cuda()
     fp_model.eval()
@@ -303,8 +322,8 @@ if __name__ == "__main__":
         qnn.set_first_last_layer_to_8bit()
 
     qnn.disable_network_output_quantization()
-    print("the quantized model is below!")
-    print(qnn)
+    # print("the quantized model is below!")
+    # print(qnn)
     cali_data, cali_target = get_train_samples(
         train_loader, num_samples=args.num_samples
     )
@@ -332,9 +351,13 @@ if __name__ == "__main__":
 
     def set_weight_act_quantize_params(module, fp_module):
         if isinstance(module, QuantModule):
-            layer_reconstruction(qnn, fp_model, module, fp_module, **kwargs)
+            layer_reconstruction(
+                qnn, fp_model, module, fp_module, **kwargs, fromCheckPoint=True
+            )
         elif isinstance(module, BaseQuantBlock):
-            block_reconstruction(qnn, fp_model, module, fp_module, **kwargs)
+            block_reconstruction(
+                qnn, fp_model, module, fp_module, **kwargs, fromCheckPoint=True
+            )
         else:
             raise NotImplementedError
 
@@ -357,15 +380,15 @@ if __name__ == "__main__":
     # Start calibration
     recon_model(qnn, fp_model)
 
+    qnn.load_state_dict(
+        torch.load(
+            f"logs/{args.arch}/W{args.n_bits_w}A{args.n_bits_a}_calib{args.num_samples}_batch{args.batch_size}_iterw{args.iters_w}.pth"
+        )
+    )
     qnn.set_quant_state(weight_quant=True, act_quant=True)
+
     print(
         "Full quantization (W{}A{}) accuracy: {}".format(
             args.n_bits_w, args.n_bits_a, validate_model(test_loader, qnn)
         )
-    )
-
-    # Save model
-    torch.save(
-        qnn.state_dict(),
-        f"logs/{args.arch}/W{args.n_bits_w}A{args.n_bits_a}_calib{args.num_samples}_batch{args.batch_size}_iterw{args.iters_w}.pth",
     )
