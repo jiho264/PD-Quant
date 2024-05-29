@@ -33,7 +33,7 @@ bn_lr=1e-3
 lamb_c=0.02
 
 # Logging arguments to a file
-log_file="logs/${arch}/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterw${iters_w}_fromCheckPoint.log"
+log_file="logs/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterw${iters_w}/${arch}/fromCheckPoint.log"
 # Clear the log file
 > $log_file
 echo "START : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $log_file

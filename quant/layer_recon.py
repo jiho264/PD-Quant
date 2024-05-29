@@ -246,6 +246,44 @@ class LossFunction:
         self.count = 0
         self.pd_loss = torch.nn.KLDivLoss(reduction="batchmean")
 
+    def JensenShannonDivLoss(self, output, output_fp):
+        """
+        24.05.28 @Lee
+        It was inspired by https://arxiv.org/pdf/2109.03228
+        they applied JS-div loss.
+
+        Args:
+            output (tensor): The output of quantized model.
+            output_fp (tensor): The output of original FP model.
+
+            >> self.lam == args.lam_r
+
+        Returns:
+            js_loss (tensor): The loss of JSDiv(output, output_fp)
+        """
+        # Calculate softmax outputs
+        softmax_output = F.softmax(output / self.T, dim=1)
+        softmax_output_fp = F.softmax(output_fp / self.T, dim=1)
+
+        # Calculate average probabilities
+        avg_p = 0.5 * (softmax_output + softmax_output_fp)
+
+        # Calculate KL divergence for both directions
+        kl_div_1 = F.kl_div(
+            F.log_softmax(output / self.T, dim=1), avg_p, reduction="batchmean"
+        )
+        kl_div_2 = F.kl_div(
+            F.log_softmax(output_fp / self.T, dim=1), avg_p, reduction="batchmean"
+        )
+
+        # Calculate Jensen-Shannon divergence
+        js_div = 0.5 * (kl_div_1 + kl_div_2)
+
+        # Apply regularization
+        js_loss = js_div / self.lam
+
+        return js_loss
+
     def __call__(self, pred, tgt, output, output_fp):
         """
         Compute the total loss for adaptive rounding:
@@ -267,6 +305,7 @@ class LossFunction:
                 "Not supported reconstruction loss function: {}".format(self.rec_loss)
             )
 
+        # pd_loss = self.JensenShannonDivLoss(output, output_fp)
         pd_loss = (
             self.pd_loss(
                 F.log_softmax(output / self.T, dim=1),

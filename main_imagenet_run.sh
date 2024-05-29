@@ -28,12 +28,12 @@ init_amode="mse"
 prob=0.5
 input_prob=0.5
 lamb_r=0.1
-T=4.0
+T=10
 bn_lr=1e-3
 lamb_c=0.02
 
 # Logging arguments to a file
-log_file="logs/${arch}/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterw${iters_w}_tmp.log"
+log_file="logs/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterW${iters_w}/${arch}/T=10.log"
 # Clear the log file
 > $log_file
 echo "START : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $log_file

@@ -1,0 +1,1005 @@
+START : 2024-05-28 20:32:04
+
+General parameters for data and model
+- seed = 1005 (default = 1005)
+- arch = resnet18
+- batch_size = 64 (default = 64)
+- workers = 8 (default = 4)
+- data_path = data/ImageNet
+
+Quantization parameters
+- n_bits_w = 4 (default = 4)
+- channel_wise = True (default = True)
+- n_bits_a = 4 (default = 4)
+- disable_8bit_head_stem = not use (action = 'store_true')
+
+Weight calibration parameters
+- num_samples = 1024 (default = 1024)
+- iters_w = 20000 (default = 20000)
+- weight = 0.01 (default = 0.01)
+- keep_cpu = not use (action = 'store_true')
+- b_start = 20 (default = 20)
+- b_end = 2 (default = 2)
+- warmup = 0.2 (default = 0.2)
+
+Activation calibration parameters
+- lr = 4e-5 (default = 4e-5)
+- init_wmode = mse (default = 'mse', choices = ['minmax', 'mse', 'minmax_scale'])
+- init_amode = mse (default = 'mse', choices = ['minmax', 'mse', 'minmax_scale'])
+- prob = 0.5 (default = 0.5)
+- input_prob = 0.5 (default = 0.5)
+- lamb_r = 0.2 (default = 0.1)
+- T = 4.0 (default = 4.0)
+- bn_lr = 1e-3 (default = 1e-3)
+- lamb_c = 0.02 (default = 0.02)
+
+-------------------------------------------------------------------------------------------
+
+==> Using Pytorch Dataset
+the quantized model is below!
+QuantModel(
+  (model): ResNet(
+    (conv1): QuantModule(
+      wbit=4, abit=4, disable_act_quant=False
+      (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      (norm_function): StraightThrough()
+      (activation_function): ReLU(inplace=True)
+    )
+    (bn1): StraightThrough()
+    (relu): StraightThrough()
+    (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+    (layer1): Sequential(
+      (0): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+      (1): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+    )
+    (layer2): Sequential(
+      (0): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (downsample): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+      (1): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+    )
+    (layer3): Sequential(
+      (0): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (downsample): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+      (1): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+    )
+    (layer4): Sequential(
+      (0): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (downsample): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+      (1): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+    )
+    (avgpool): AdaptiveAvgPool2d(output_size=(1, 1))
+    (fc): QuantModule(
+      wbit=4, abit=4, disable_act_quant=True
+      (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      (norm_function): StraightThrough()
+      (activation_function): StraightThrough()
+    )
+  )
+)
+Reconstruction for layer conv1
+Start correcting 32 batches of data!
+Total loss:	21.192 (mse:4.362, mean:10.938, std:5.892)	count=499
+Total loss:	23.901 (mse:5.069, mean:12.871, std:5.961)	count=499
+Total loss:	20.062 (mse:4.695, mean:9.869, std:5.498)	count=499
+Total loss:	27.691 (mse:5.420, mean:15.881, std:6.390)	count=499
+Total loss:	23.312 (mse:4.992, mean:11.990, std:6.330)	count=499
+Total loss:	22.521 (mse:4.832, mean:11.838, std:5.851)	count=499
+Total loss:	17.219 (mse:4.161, mean:7.658, std:5.399)	count=499
+Total loss:	23.394 (mse:5.177, mean:12.602, std:5.616)	count=499
+Total loss:	23.555 (mse:5.144, mean:11.495, std:6.916)	count=499
+Total loss:	18.540 (mse:4.392, mean:7.964, std:6.184)	count=499
+Total loss:	22.983 (mse:4.784, mean:12.286, std:5.913)	count=499
+Total loss:	18.748 (mse:4.482, mean:8.940, std:5.326)	count=499
+Total loss:	27.137 (mse:5.383, mean:15.000, std:6.754)	count=499
+Total loss:	17.387 (mse:4.084, mean:8.682, std:4.620)	count=499
+Total loss:	23.204 (mse:5.382, mean:11.215, std:6.607)	count=499
+Total loss:	24.122 (mse:5.588, mean:11.672, std:6.862)	count=499
+Total loss:	16.759 (mse:3.887, mean:7.799, std:5.072)	count=499
+Total loss:	23.370 (mse:4.916, mean:12.983, std:5.471)	count=499
+Total loss:	19.351 (mse:3.939, mean:10.852, std:4.560)	count=499
+Total loss:	21.531 (mse:4.979, mean:8.469, std:8.083)	count=499
+Total loss:	17.631 (mse:4.097, mean:8.545, std:4.990)	count=499
+Total loss:	21.789 (mse:4.727, mean:10.654, std:6.408)	count=499
+Total loss:	24.433 (mse:5.154, mean:13.821, std:5.458)	count=499
+Total loss:	20.636 (mse:4.968, mean:9.557, std:6.111)	count=499
+Total loss:	28.744 (mse:5.958, mean:15.290, std:7.496)	count=499
+Total loss:	19.619 (mse:5.111, mean:8.604, std:5.904)	count=499
+Total loss:	19.674 (mse:4.472, mean:9.361, std:5.841)	count=499
+Total loss:	22.065 (mse:5.389, mean:9.812, std:6.865)	count=499
+Total loss:	21.564 (mse:4.740, mean:10.878, std:5.946)	count=499
+Total loss:	19.739 (mse:4.704, mean:9.016, std:6.019)	count=499
+Total loss:	20.763 (mse:4.583, mean:9.675, std:6.505)	count=499
+Total loss:	20.297 (mse:4.723, mean:9.487, std:6.088)	count=499
+Init alpha to be FP32
+Total loss:	0.039 (rec:0.037, pd:0.002, round:0.000)	b=0.00	count=500
+Total loss:	0.049 (rec:0.047, pd:0.002, round:0.000)	b=0.00	count=1000
+Total loss:	0.046 (rec:0.044, pd:0.002, round:0.000)	b=0.00	count=1500
+Total loss:	0.047 (rec:0.045, pd:0.001, round:0.000)	b=0.00	count=2000
+Total loss:	0.041 (rec:0.039, pd:0.001, round:0.000)	b=0.00	count=2500
+Total loss:	0.056 (rec:0.054, pd:0.002, round:0.000)	b=0.00	count=3000
+Total loss:	0.048 (rec:0.047, pd:0.001, round:0.000)	b=0.00	count=3500
+Total loss:	81.571 (rec:0.048, pd:0.002, round:81.521)	b=20.00	count=4000
+Total loss:	40.465 (rec:0.042, pd:0.002, round:40.421)	b=19.44	count=4500
+Total loss:	38.054 (rec:0.046, pd:0.002, round:38.006)	b=18.88	count=5000
+Total loss:	36.272 (rec:0.046, pd:0.002, round:36.224)	b=18.31	count=5500
+Total loss:	34.466 (rec:0.040, pd:0.002, round:34.424)	b=17.75	count=6000
+Total loss:	32.963 (rec:0.042, pd:0.002, round:32.919)	b=17.19	count=6500
+Total loss:	31.533 (rec:0.043, pd:0.001, round:31.488)	b=16.62	count=7000
+Total loss:	30.261 (rec:0.045, pd:0.002, round:30.214)	b=16.06	count=7500
+Total loss:	28.785 (rec:0.045, pd:0.001, round:28.739)	b=15.50	count=8000
+Total loss:	27.597 (rec:0.041, pd:0.001, round:27.554)	b=14.94	count=8500
+Total loss:	26.245 (rec:0.048, pd:0.002, round:26.195)	b=14.38	count=9000
+Total loss:	24.952 (rec:0.044, pd:0.001, round:24.907)	b=13.81	count=9500
+Total loss:	23.701 (rec:0.044, pd:0.002, round:23.654)	b=13.25	count=10000
+Total loss:	21.950 (rec:0.039, pd:0.001, round:21.910)	b=12.69	count=10500
+Total loss:	20.405 (rec:0.037, pd:0.001, round:20.367)	b=12.12	count=11000
+Total loss:	18.998 (rec:0.042, pd:0.002, round:18.954)	b=11.56	count=11500
+Total loss:	17.521 (rec:0.039, pd:0.002, round:17.479)	b=11.00	count=12000
+Total loss:	15.883 (rec:0.040, pd:0.002, round:15.842)	b=10.44	count=12500
+Total loss:	14.254 (rec:0.039, pd:0.001, round:14.213)	b=9.88	count=13000
+Total loss:	12.638 (rec:0.042, pd:0.002, round:12.595)	b=9.31	count=13500
+Total loss:	10.847 (rec:0.044, pd:0.002, round:10.801)	b=8.75	count=14000
+Total loss:	8.980 (rec:0.040, pd:0.002, round:8.938)	b=8.19	count=14500
+Total loss:	6.911 (rec:0.046, pd:0.002, round:6.863)	b=7.62	count=15000
+Total loss:	4.911 (rec:0.042, pd:0.002, round:4.866)	b=7.06	count=15500
+Total loss:	2.809 (rec:0.043, pd:0.002, round:2.764)	b=6.50	count=16000
+Total loss:	1.282 (rec:0.044, pd:0.002, round:1.236)	b=5.94	count=16500
+Total loss:	0.295 (rec:0.049, pd:0.002, round:0.244)	b=5.38	count=17000
+Total loss:	0.094 (rec:0.047, pd:0.002, round:0.045)	b=4.81	count=17500
+Total loss:	0.059 (rec:0.047, pd:0.002, round:0.010)	b=4.25	count=18000
+Total loss:	0.058 (rec:0.046, pd:0.002, round:0.010)	b=3.69	count=18500
+Total loss:	0.048 (rec:0.046, pd:0.002, round:0.000)	b=3.12	count=19000
+Total loss:	0.045 (rec:0.042, pd:0.002, round:0.000)	b=2.56	count=19500
+Total loss:	0.048 (rec:0.046, pd:0.002, round:0.000)	b=2.00	count=20000
+Reconstruction for block 0
+Start correcting 32 batches of data!
+Total loss:	1.424 (mse:0.200, mean:0.591, std:0.634)	count=499
+Total loss:	1.629 (mse:0.219, mean:0.651, std:0.759)	count=499
+Total loss:	1.524 (mse:0.198, mean:0.564, std:0.762)	count=499
+Total loss:	1.689 (mse:0.234, mean:0.704, std:0.752)	count=499
+Total loss:	1.883 (mse:0.262, mean:0.789, std:0.832)	count=499
+Total loss:	1.502 (mse:0.200, mean:0.636, std:0.666)	count=499
+Total loss:	1.550 (mse:0.206, mean:0.608, std:0.736)	count=499
+Total loss:	1.634 (mse:0.212, mean:0.715, std:0.707)	count=499
+Total loss:	1.640 (mse:0.230, mean:0.589, std:0.821)	count=499
+Total loss:	1.655 (mse:0.223, mean:0.746, std:0.686)	count=499
+Total loss:	1.881 (mse:0.248, mean:0.919, std:0.714)	count=499
+Total loss:	1.818 (mse:0.237, mean:0.869, std:0.712)	count=499
+Total loss:	1.649 (mse:0.220, mean:0.693, std:0.736)	count=499
+Total loss:	1.303 (mse:0.170, mean:0.522, std:0.611)	count=499
+Total loss:	1.855 (mse:0.239, mean:0.922, std:0.694)	count=499
+Total loss:	1.940 (mse:0.258, mean:0.878, std:0.803)	count=499
+Total loss:	1.279 (mse:0.169, mean:0.556, std:0.554)	count=499
+Total loss:	1.546 (mse:0.205, mean:0.619, std:0.721)	count=499
+Total loss:	1.323 (mse:0.179, mean:0.518, std:0.627)	count=499
+Total loss:	2.282 (mse:0.295, mean:1.059, std:0.928)	count=499
+Total loss:	1.558 (mse:0.211, mean:0.618, std:0.730)	count=499
+Total loss:	1.480 (mse:0.199, mean:0.637, std:0.644)	count=499
+Total loss:	1.639 (mse:0.220, mean:0.764, std:0.655)	count=499
+Total loss:	1.808 (mse:0.240, mean:0.773, std:0.794)	count=499
+Total loss:	2.013 (mse:0.271, mean:0.829, std:0.913)	count=499
+Total loss:	1.974 (mse:0.247, mean:1.081, std:0.646)	count=499
+Total loss:	1.469 (mse:0.198, mean:0.605, std:0.665)	count=499
+Total loss:	1.848 (mse:0.247, mean:0.780, std:0.821)	count=499
+Total loss:	1.756 (mse:0.233, mean:0.764, std:0.760)	count=499
+Total loss:	1.561 (mse:0.214, mean:0.614, std:0.733)	count=499
+Total loss:	1.982 (mse:0.267, mean:1.119, std:0.595)	count=499
+Total loss:	1.452 (mse:0.199, mean:0.536, std:0.717)	count=499
+Init alpha to be FP32
+Init alpha to be FP32
+Total loss:	0.145 (rec:0.140, pd:0.005, round:0.000)	b=0.00	count=500
+Total loss:	0.163 (rec:0.157, pd:0.007, round:0.000)	b=0.00	count=1000
+Total loss:	0.173 (rec:0.167, pd:0.006, round:0.000)	b=0.00	count=1500
+Total loss:	0.131 (rec:0.127, pd:0.004, round:0.000)	b=0.00	count=2000
+Total loss:	0.152 (rec:0.148, pd:0.004, round:0.000)	b=0.00	count=2500
+Total loss:	0.129 (rec:0.125, pd:0.004, round:0.000)	b=0.00	count=3000
+Total loss:	0.135 (rec:0.131, pd:0.004, round:0.000)	b=0.00	count=3500
+Total loss:	632.421 (rec:0.131, pd:0.004, round:632.286)	b=20.00	count=4000
+Total loss:	331.594 (rec:0.126, pd:0.003, round:331.464)	b=19.44	count=4500
+Total loss:	308.965 (rec:0.139, pd:0.004, round:308.822)	b=18.88	count=5000
+Total loss:	292.144 (rec:0.140, pd:0.004, round:292.000)	b=18.31	count=5500
+Total loss:	277.955 (rec:0.153, pd:0.005, round:277.797)	b=17.75	count=6000
+Total loss:	265.392 (rec:0.140, pd:0.004, round:265.248)	b=17.19	count=6500
+Total loss:	252.950 (rec:0.122, pd:0.003, round:252.825)	b=16.62	count=7000
+Total loss:	241.926 (rec:0.128, pd:0.004, round:241.794)	b=16.06	count=7500
+Total loss:	230.112 (rec:0.142, pd:0.004, round:229.966)	b=15.50	count=8000
+Total loss:	217.951 (rec:0.125, pd:0.003, round:217.823)	b=14.94	count=8500
+Total loss:	206.699 (rec:0.136, pd:0.004, round:206.559)	b=14.38	count=9000
+Total loss:	195.055 (rec:0.134, pd:0.003, round:194.917)	b=13.81	count=9500
+Total loss:	183.228 (rec:0.122, pd:0.004, round:183.102)	b=13.25	count=10000
+Total loss:	171.035 (rec:0.147, pd:0.004, round:170.884)	b=12.69	count=10500
+Total loss:	158.531 (rec:0.138, pd:0.003, round:158.389)	b=12.12	count=11000
+Total loss:	145.347 (rec:0.123, pd:0.003, round:145.221)	b=11.56	count=11500
+Total loss:	132.828 (rec:0.148, pd:0.005, round:132.675)	b=11.00	count=12000
+Total loss:	118.518 (rec:0.147, pd:0.004, round:118.367)	b=10.44	count=12500
+Total loss:	104.801 (rec:0.152, pd:0.004, round:104.645)	b=9.88	count=13000
+Total loss:	90.750 (rec:0.138, pd:0.004, round:90.608)	b=9.31	count=13500
+Total loss:	76.007 (rec:0.127, pd:0.004, round:75.876)	b=8.75	count=14000
+Total loss:	60.715 (rec:0.152, pd:0.004, round:60.559)	b=8.19	count=14500
+Total loss:	46.731 (rec:0.147, pd:0.003, round:46.580)	b=7.62	count=15000
+Total loss:	33.460 (rec:0.166, pd:0.005, round:33.289)	b=7.06	count=15500
+Total loss:	21.143 (rec:0.133, pd:0.004, round:21.006)	b=6.50	count=16000
+Total loss:	11.089 (rec:0.147, pd:0.004, round:10.939)	b=5.94	count=16500
+Total loss:	3.689 (rec:0.161, pd:0.005, round:3.523)	b=5.38	count=17000
+Total loss:	0.619 (rec:0.140, pd:0.004, round:0.475)	b=4.81	count=17500
+Total loss:	0.253 (rec:0.170, pd:0.003, round:0.079)	b=4.25	count=18000
+Total loss:	0.188 (rec:0.175, pd:0.003, round:0.010)	b=3.69	count=18500
+Total loss:	0.163 (rec:0.159, pd:0.004, round:0.000)	b=3.12	count=19000
+Total loss:	0.132 (rec:0.129, pd:0.003, round:0.000)	b=2.56	count=19500
+Total loss:	0.149 (rec:0.145, pd:0.003, round:0.000)	b=2.00	count=20000
+Reconstruction for block 1
+Start correcting 32 batches of data!
+Total loss:	0.984 (mse:0.066, mean:0.515, std:0.403)	count=499
+Total loss:	0.999 (mse:0.063, mean:0.500, std:0.435)	count=499
+Total loss:	0.982 (mse:0.061, mean:0.459, std:0.462)	count=499
+Total loss:	1.125 (mse:0.071, mean:0.581, std:0.474)	count=499
+Total loss:	1.211 (mse:0.082, mean:0.596, std:0.533)	count=499
+Total loss:	0.931 (mse:0.059, mean:0.483, std:0.389)	count=499
+Total loss:	0.959 (mse:0.063, mean:0.446, std:0.450)	count=499
+Total loss:	1.055 (mse:0.068, mean:0.565, std:0.421)	count=499
+Total loss:	1.118 (mse:0.076, mean:0.515, std:0.527)	count=499
+Total loss:	1.049 (mse:0.068, mean:0.575, std:0.405)	count=499
+Total loss:	1.046 (mse:0.068, mean:0.604, std:0.373)	count=499
+Total loss:	1.133 (mse:0.078, mean:0.604, std:0.451)	count=499
+Total loss:	1.161 (mse:0.078, mean:0.593, std:0.489)	count=499
+Total loss:	0.787 (mse:0.052, mean:0.406, std:0.330)	count=499
+Total loss:	1.131 (mse:0.075, mean:0.606, std:0.450)	count=499
+Total loss:	1.217 (mse:0.082, mean:0.599, std:0.537)	count=499
+Total loss:	0.853 (mse:0.054, mean:0.460, std:0.339)	count=499
+Total loss:	1.068 (mse:0.071, mean:0.541, std:0.456)	count=499
+Total loss:	0.889 (mse:0.057, mean:0.462, std:0.369)	count=499
+Total loss:	1.237 (mse:0.082, mean:0.634, std:0.521)	count=499
+Total loss:	0.996 (mse:0.064, mean:0.477, std:0.455)	count=499
+Total loss:	0.924 (mse:0.058, mean:0.487, std:0.379)	count=499
+Total loss:	1.092 (mse:0.074, mean:0.587, std:0.432)	count=499
+Total loss:	1.033 (mse:0.066, mean:0.492, std:0.475)	count=499
+Total loss:	1.300 (mse:0.087, mean:0.613, std:0.599)	count=499
+Total loss:	1.074 (mse:0.073, mean:0.640, std:0.362)	count=499
+Total loss:	0.937 (mse:0.060, mean:0.462, std:0.414)	count=499
+Total loss:	1.201 (mse:0.081, mean:0.609, std:0.511)	count=499
+Total loss:	1.049 (mse:0.069, mean:0.535, std:0.446)	count=499
+Total loss:	0.962 (mse:0.063, mean:0.485, std:0.414)	count=499
+Total loss:	1.259 (mse:0.084, mean:0.754, std:0.421)	count=499
+Total loss:	0.923 (mse:0.060, mean:0.447, std:0.417)	count=499
+Init alpha to be FP32
+Init alpha to be FP32
+Total loss:	0.298 (rec:0.294, pd:0.004, round:0.000)	b=0.00	count=500
+Total loss:	0.332 (rec:0.327, pd:0.005, round:0.000)	b=0.00	count=1000
+Total loss:	0.309 (rec:0.305, pd:0.004, round:0.000)	b=0.00	count=1500
+Total loss:	0.270 (rec:0.267, pd:0.003, round:0.000)	b=0.00	count=2000
+Total loss:	0.298 (rec:0.295, pd:0.003, round:0.000)	b=0.00	count=2500
+Total loss:	0.274 (rec:0.270, pd:0.004, round:0.000)	b=0.00	count=3000
+Total loss:	0.291 (rec:0.286, pd:0.005, round:0.000)	b=0.00	count=3500
+Total loss:	639.444 (rec:0.264, pd:0.003, round:639.177)	b=20.00	count=4000
+Total loss:	332.810 (rec:0.269, pd:0.003, round:332.538)	b=19.44	count=4500
+Total loss:	308.102 (rec:0.267, pd:0.004, round:307.831)	b=18.88	count=5000
+Total loss:	290.564 (rec:0.294, pd:0.004, round:290.267)	b=18.31	count=5500
+Total loss:	275.685 (rec:0.274, pd:0.003, round:275.408)	b=17.75	count=6000
+Total loss:	262.528 (rec:0.271, pd:0.003, round:262.255)	b=17.19	count=6500
+Total loss:	249.825 (rec:0.275, pd:0.003, round:249.547)	b=16.62	count=7000
+Total loss:	237.400 (rec:0.279, pd:0.004, round:237.117)	b=16.06	count=7500
+Total loss:	225.109 (rec:0.316, pd:0.004, round:224.790)	b=15.50	count=8000
+Total loss:	212.649 (rec:0.279, pd:0.004, round:212.366)	b=14.94	count=8500
+Total loss:	200.440 (rec:0.392, pd:0.005, round:200.042)	b=14.38	count=9000
+Total loss:	187.669 (rec:0.264, pd:0.004, round:187.402)	b=13.81	count=9500
+Total loss:	174.277 (rec:0.295, pd:0.003, round:173.979)	b=13.25	count=10000
+Total loss:	161.404 (rec:0.312, pd:0.003, round:161.088)	b=12.69	count=10500
+Total loss:	147.953 (rec:0.271, pd:0.003, round:147.679)	b=12.12	count=11000
+Total loss:	133.142 (rec:0.295, pd:0.004, round:132.843)	b=11.56	count=11500
+Total loss:	117.363 (rec:0.328, pd:0.004, round:117.032)	b=11.00	count=12000
+Total loss:	101.961 (rec:0.272, pd:0.003, round:101.685)	b=10.44	count=12500
+Total loss:	86.669 (rec:0.270, pd:0.003, round:86.396)	b=9.88	count=13000
+Total loss:	70.531 (rec:0.288, pd:0.003, round:70.240)	b=9.31	count=13500
+Total loss:	54.957 (rec:0.295, pd:0.003, round:54.659)	b=8.75	count=14000
+Total loss:	40.013 (rec:0.320, pd:0.003, round:39.690)	b=8.19	count=14500
+Total loss:	26.348 (rec:0.288, pd:0.003, round:26.057)	b=7.62	count=15000
+Total loss:	15.624 (rec:0.295, pd:0.003, round:15.326)	b=7.06	count=15500
+Total loss:	7.678 (rec:0.292, pd:0.003, round:7.383)	b=6.50	count=16000
+Total loss:	3.082 (rec:0.292, pd:0.003, round:2.786)	b=5.94	count=16500
+Total loss:	1.010 (rec:0.291, pd:0.004, round:0.716)	b=5.38	count=17000
+Total loss:	0.513 (rec:0.362, pd:0.003, round:0.148)	b=4.81	count=17500
+Total loss:	0.347 (rec:0.313, pd:0.004, round:0.030)	b=4.25	count=18000
+Total loss:	0.290 (rec:0.284, pd:0.003, round:0.003)	b=3.69	count=18500
+Total loss:	0.302 (rec:0.299, pd:0.004, round:0.000)	b=3.12	count=19000
+Total loss:	0.282 (rec:0.279, pd:0.003, round:0.000)	b=2.56	count=19500
+Total loss:	0.300 (rec:0.297, pd:0.004, round:0.000)	b=2.00	count=20000
+Reconstruction for block 0
+Start correcting 32 batches of data!
+Total loss:	2.050 (mse:0.217, mean:0.915, std:0.919)	count=499
+Total loss:	2.109 (mse:0.223, mean:0.987, std:0.899)	count=499
+Total loss:	2.189 (mse:0.234, mean:1.069, std:0.886)	count=499
+Total loss:	2.425 (mse:0.260, mean:1.150, std:1.015)	count=499
+Total loss:	2.515 (mse:0.271, mean:1.175, std:1.069)	count=499
+Total loss:	2.049 (mse:0.216, mean:0.962, std:0.870)	count=499
+Total loss:	1.901 (mse:0.201, mean:0.843, std:0.857)	count=499
+Total loss:	2.223 (mse:0.235, mean:1.083, std:0.905)	count=499
+Total loss:	2.363 (mse:0.254, mean:0.958, std:1.150)	count=499
+Total loss:	2.334 (mse:0.261, mean:1.165, std:0.907)	count=499
+Total loss:	2.224 (mse:0.238, mean:1.172, std:0.814)	count=499
+Total loss:	2.117 (mse:0.231, mean:0.980, std:0.906)	count=499
+Total loss:	2.462 (mse:0.266, mean:1.121, std:1.075)	count=499
+Total loss:	1.797 (mse:0.191, mean:0.888, std:0.717)	count=499
+Total loss:	2.129 (mse:0.225, mean:0.961, std:0.943)	count=499
+Total loss:	2.449 (mse:0.265, mean:1.035, std:1.149)	count=499
+Total loss:	1.784 (mse:0.181, mean:0.895, std:0.707)	count=499
+Total loss:	2.380 (mse:0.256, mean:1.112, std:1.011)	count=499
+Total loss:	1.876 (mse:0.195, mean:0.879, std:0.803)	count=499
+Total loss:	2.298 (mse:0.249, mean:1.132, std:0.917)	count=499
+Total loss:	2.084 (mse:0.223, mean:0.942, std:0.919)	count=499
+Total loss:	1.934 (mse:0.204, mean:0.915, std:0.815)	count=499
+Total loss:	2.405 (mse:0.260, mean:1.151, std:0.994)	count=499
+Total loss:	2.157 (mse:0.235, mean:0.954, std:0.969)	count=499
+Total loss:	2.603 (mse:0.285, mean:1.108, std:1.210)	count=499
+Total loss:	2.118 (mse:0.233, mean:1.083, std:0.802)	count=499
+Total loss:	1.989 (mse:0.216, mean:0.901, std:0.872)	count=499
+Total loss:	2.357 (mse:0.249, mean:1.037, std:1.071)	count=499
+Total loss:	2.186 (mse:0.230, mean:1.033, std:0.924)	count=499
+Total loss:	2.156 (mse:0.225, mean:1.054, std:0.877)	count=499
+Total loss:	2.590 (mse:0.272, mean:1.271, std:1.048)	count=499
+Total loss:	1.981 (mse:0.211, mean:0.882, std:0.888)	count=499
+Init alpha to be FP32
+Init alpha to be FP32
+Init alpha to be FP32
+Total loss:	0.150 (rec:0.146, pd:0.004, round:0.000)	b=0.00	count=500
+Total loss:	0.150 (rec:0.147, pd:0.003, round:0.000)	b=0.00	count=1000
+Total loss:	0.146 (rec:0.143, pd:0.004, round:0.000)	b=0.00	count=1500
+Total loss:	0.145 (rec:0.141, pd:0.004, round:0.000)	b=0.00	count=2000
+Total loss:	0.153 (rec:0.149, pd:0.004, round:0.000)	b=0.00	count=2500
+Total loss:	0.146 (rec:0.143, pd:0.003, round:0.000)	b=0.00	count=3000
+Total loss:	0.145 (rec:0.142, pd:0.003, round:0.000)	b=0.00	count=3500
+Total loss:	2076.280 (rec:0.142, pd:0.002, round:2076.136)	b=20.00	count=4000
+Total loss:	1001.938 (rec:0.157, pd:0.004, round:1001.777)	b=19.44	count=4500
+Total loss:	923.082 (rec:0.149, pd:0.004, round:922.929)	b=18.88	count=5000
+Total loss:	867.922 (rec:0.148, pd:0.004, round:867.770)	b=18.31	count=5500
+Total loss:	821.974 (rec:0.145, pd:0.003, round:821.826)	b=17.75	count=6000
+Total loss:	779.927 (rec:0.145, pd:0.003, round:779.779)	b=17.19	count=6500
+Total loss:	741.290 (rec:0.162, pd:0.003, round:741.124)	b=16.62	count=7000
+Total loss:	703.775 (rec:0.153, pd:0.003, round:703.619)	b=16.06	count=7500
+Total loss:	665.720 (rec:0.151, pd:0.003, round:665.566)	b=15.50	count=8000
+Total loss:	628.401 (rec:0.154, pd:0.004, round:628.243)	b=14.94	count=8500
+Total loss:	590.219 (rec:0.152, pd:0.003, round:590.064)	b=14.38	count=9000
+Total loss:	552.074 (rec:0.149, pd:0.003, round:551.922)	b=13.81	count=9500
+Total loss:	513.363 (rec:0.154, pd:0.003, round:513.206)	b=13.25	count=10000
+Total loss:	471.081 (rec:0.156, pd:0.003, round:470.922)	b=12.69	count=10500
+Total loss:	427.231 (rec:0.162, pd:0.004, round:427.065)	b=12.12	count=11000
+Total loss:	382.418 (rec:0.150, pd:0.003, round:382.265)	b=11.56	count=11500
+Total loss:	336.517 (rec:0.149, pd:0.003, round:336.365)	b=11.00	count=12000
+Total loss:	288.982 (rec:0.155, pd:0.004, round:288.824)	b=10.44	count=12500
+Total loss:	241.221 (rec:0.156, pd:0.003, round:241.062)	b=9.88	count=13000
+Total loss:	194.781 (rec:0.159, pd:0.003, round:194.618)	b=9.31	count=13500
+Total loss:	149.310 (rec:0.172, pd:0.004, round:149.134)	b=8.75	count=14000
+Total loss:	106.618 (rec:0.159, pd:0.003, round:106.456)	b=8.19	count=14500
+Total loss:	69.247 (rec:0.167, pd:0.003, round:69.076)	b=7.62	count=15000
+Total loss:	39.819 (rec:0.159, pd:0.003, round:39.657)	b=7.06	count=15500
+Total loss:	18.211 (rec:0.161, pd:0.003, round:18.047)	b=6.50	count=16000
+Total loss:	3.586 (rec:0.164, pd:0.003, round:3.419)	b=5.94	count=16500
+Total loss:	0.682 (rec:0.185, pd:0.004, round:0.494)	b=5.38	count=17000
+Total loss:	0.361 (rec:0.164, pd:0.003, round:0.194)	b=4.81	count=17500
+Total loss:	0.233 (rec:0.171, pd:0.003, round:0.060)	b=4.25	count=18000
+Total loss:	0.216 (rec:0.173, pd:0.004, round:0.039)	b=3.69	count=18500
+Total loss:	0.176 (rec:0.173, pd:0.003, round:0.000)	b=3.12	count=19000
+Total loss:	0.176 (rec:0.173, pd:0.003, round:0.000)	b=2.56	count=19500
+Total loss:	0.171 (rec:0.167, pd:0.004, round:0.000)	b=2.00	count=20000
+Reconstruction for block 1
+Start correcting 32 batches of data!
+Total loss:	0.662 (mse:0.053, mean:0.366, std:0.243)	count=499
+Total loss:	0.607 (mse:0.047, mean:0.347, std:0.213)	count=499
+Total loss:	0.691 (mse:0.058, mean:0.383, std:0.250)	count=499
+Total loss:	0.810 (mse:0.067, mean:0.472, std:0.271)	count=499
+Total loss:	0.779 (mse:0.066, mean:0.427, std:0.285)	count=499
+Total loss:	0.598 (mse:0.046, mean:0.341, std:0.211)	count=499
+Total loss:	0.591 (mse:0.047, mean:0.308, std:0.236)	count=499
+Total loss:	0.694 (mse:0.055, mean:0.408, std:0.231)	count=499
+Total loss:	0.803 (mse:0.065, mean:0.444, std:0.294)	count=499
+Total loss:	0.761 (mse:0.064, mean:0.445, std:0.252)	count=499
+Total loss:	0.620 (mse:0.048, mean:0.379, std:0.194)	count=499
+Total loss:	0.651 (mse:0.055, mean:0.374, std:0.222)	count=499
+Total loss:	0.718 (mse:0.057, mean:0.399, std:0.262)	count=499
+Total loss:	0.604 (mse:0.050, mean:0.350, std:0.205)	count=499
+Total loss:	0.638 (mse:0.052, mean:0.355, std:0.230)	count=499
+Total loss:	0.734 (mse:0.058, mean:0.408, std:0.268)	count=499
+Total loss:	0.634 (mse:0.052, mean:0.374, std:0.207)	count=499
+Total loss:	0.717 (mse:0.060, mean:0.392, std:0.265)	count=499
+Total loss:	0.598 (mse:0.048, mean:0.333, std:0.217)	count=499
+Total loss:	0.692 (mse:0.059, mean:0.412, std:0.220)	count=499
+Total loss:	0.672 (mse:0.056, mean:0.356, std:0.260)	count=499
+Total loss:	0.580 (mse:0.046, mean:0.331, std:0.202)	count=499
+Total loss:	0.696 (mse:0.057, mean:0.375, std:0.264)	count=499
+Total loss:	0.712 (mse:0.060, mean:0.399, std:0.253)	count=499
+Total loss:	0.758 (mse:0.064, mean:0.384, std:0.310)	count=499
+Total loss:	0.593 (mse:0.045, mean:0.371, std:0.178)	count=499
+Total loss:	0.688 (mse:0.058, mean:0.403, std:0.228)	count=499
+Total loss:	0.690 (mse:0.058, mean:0.364, std:0.269)	count=499
+Total loss:	0.682 (mse:0.057, mean:0.377, std:0.248)	count=499
+Total loss:	0.670 (mse:0.052, mean:0.384, std:0.234)	count=499
+Total loss:	0.768 (mse:0.060, mean:0.462, std:0.246)	count=499
+Total loss:	0.635 (mse:0.051, mean:0.347, std:0.236)	count=499
+Init alpha to be FP32
+Init alpha to be FP32
+Total loss:	0.275 (rec:0.272, pd:0.003, round:0.000)	b=0.00	count=500
+Total loss:	0.258 (rec:0.255, pd:0.003, round:0.000)	b=0.00	count=1000
+Total loss:	0.286 (rec:0.282, pd:0.004, round:0.000)	b=0.00	count=1500
+Total loss:	0.259 (rec:0.255, pd:0.003, round:0.000)	b=0.00	count=2000
+Total loss:	0.267 (rec:0.264, pd:0.003, round:0.000)	b=0.00	count=2500
+Total loss:	0.274 (rec:0.271, pd:0.003, round:0.000)	b=0.00	count=3000
+Total loss:	0.277 (rec:0.274, pd:0.003, round:0.000)	b=0.00	count=3500
+Total loss:	2611.931 (rec:0.281, pd:0.003, round:2611.646)	b=20.00	count=4000
+Total loss:	1257.143 (rec:0.268, pd:0.003, round:1256.872)	b=19.44	count=4500
+Total loss:	1161.255 (rec:0.284, pd:0.003, round:1160.967)	b=18.88	count=5000
+Total loss:	1092.786 (rec:0.278, pd:0.003, round:1092.505)	b=18.31	count=5500
+Total loss:	1034.613 (rec:0.262, pd:0.003, round:1034.349)	b=17.75	count=6000
+Total loss:	981.076 (rec:0.277, pd:0.003, round:980.796)	b=17.19	count=6500
+Total loss:	931.441 (rec:0.284, pd:0.003, round:931.154)	b=16.62	count=7000
+Total loss:	882.973 (rec:0.266, pd:0.003, round:882.704)	b=16.06	count=7500
+Total loss:	835.856 (rec:0.273, pd:0.003, round:835.580)	b=15.50	count=8000
+Total loss:	789.122 (rec:0.293, pd:0.004, round:788.826)	b=14.94	count=8500
+Total loss:	740.910 (rec:0.254, pd:0.003, round:740.654)	b=14.38	count=9000
+Total loss:	692.936 (rec:0.270, pd:0.003, round:692.663)	b=13.81	count=9500
+Total loss:	644.335 (rec:0.289, pd:0.003, round:644.043)	b=13.25	count=10000
+Total loss:	593.925 (rec:0.285, pd:0.004, round:593.636)	b=12.69	count=10500
+Total loss:	542.331 (rec:0.283, pd:0.003, round:542.045)	b=12.12	count=11000
+Total loss:	487.452 (rec:0.303, pd:0.003, round:487.146)	b=11.56	count=11500
+Total loss:	432.282 (rec:0.274, pd:0.003, round:432.005)	b=11.00	count=12000
+Total loss:	375.233 (rec:0.289, pd:0.003, round:374.940)	b=10.44	count=12500
+Total loss:	316.995 (rec:0.297, pd:0.004, round:316.694)	b=9.88	count=13000
+Total loss:	256.219 (rec:0.274, pd:0.003, round:255.942)	b=9.31	count=13500
+Total loss:	197.547 (rec:0.289, pd:0.004, round:197.254)	b=8.75	count=14000
+Total loss:	141.266 (rec:0.294, pd:0.003, round:140.969)	b=8.19	count=14500
+Total loss:	90.635 (rec:0.282, pd:0.003, round:90.351)	b=7.62	count=15000
+Total loss:	49.501 (rec:0.288, pd:0.003, round:49.209)	b=7.06	count=15500
+Total loss:	18.819 (rec:0.292, pd:0.003, round:18.524)	b=6.50	count=16000
+Total loss:	3.360 (rec:0.272, pd:0.003, round:3.085)	b=5.94	count=16500
+Total loss:	0.843 (rec:0.276, pd:0.002, round:0.564)	b=5.38	count=17000
+Total loss:	0.376 (rec:0.286, pd:0.003, round:0.088)	b=4.81	count=17500
+Total loss:	0.306 (rec:0.273, pd:0.003, round:0.030)	b=4.25	count=18000
+Total loss:	0.303 (rec:0.299, pd:0.003, round:0.000)	b=3.69	count=18500
+Total loss:	0.291 (rec:0.288, pd:0.003, round:0.000)	b=3.12	count=19000
+Total loss:	0.286 (rec:0.283, pd:0.003, round:0.000)	b=2.56	count=19500
+Total loss:	0.292 (rec:0.289, pd:0.003, round:0.000)	b=2.00	count=20000
+Reconstruction for block 0
+Start correcting 32 batches of data!
+Total loss:	2.836 (mse:0.514, mean:1.529, std:0.793)	count=499
+Total loss:	2.945 (mse:0.544, mean:1.672, std:0.729)	count=499
+Total loss:	3.083 (mse:0.580, mean:1.718, std:0.785)	count=499
+Total loss:	3.428 (mse:0.651, mean:1.910, std:0.868)	count=499
+Total loss:	3.324 (mse:0.609, mean:1.814, std:0.901)	count=499
+Total loss:	2.788 (mse:0.503, mean:1.548, std:0.736)	count=499
+Total loss:	2.762 (mse:0.518, mean:1.479, std:0.766)	count=499
+Total loss:	3.144 (mse:0.581, mean:1.809, std:0.754)	count=499
+Total loss:	3.226 (mse:0.591, mean:1.770, std:0.864)	count=499
+Total loss:	3.293 (mse:0.630, mean:1.881, std:0.782)	count=499
+Total loss:	3.121 (mse:0.592, mean:1.828, std:0.701)	count=499
+Total loss:	2.831 (mse:0.510, mean:1.613, std:0.709)	count=499
+Total loss:	3.096 (mse:0.561, mean:1.727, std:0.808)	count=499
+Total loss:	2.633 (mse:0.483, mean:1.505, std:0.645)	count=499
+Total loss:	2.989 (mse:0.558, mean:1.676, std:0.755)	count=499
+Total loss:	3.161 (mse:0.572, mean:1.743, std:0.846)	count=499
+Total loss:	2.904 (mse:0.549, mean:1.633, std:0.721)	count=499
+Total loss:	2.984 (mse:0.541, mean:1.638, std:0.804)	count=499
+Total loss:	2.797 (mse:0.520, mean:1.536, std:0.741)	count=499
+Total loss:	3.123 (mse:0.582, mean:1.755, std:0.786)	count=499
+Total loss:	2.844 (mse:0.524, mean:1.575, std:0.746)	count=499
+Total loss:	2.802 (mse:0.525, mean:1.551, std:0.726)	count=499
+Total loss:	3.158 (mse:0.587, mean:1.757, std:0.814)	count=499
+Total loss:	3.143 (mse:0.598, mean:1.764, std:0.780)	count=499
+Total loss:	3.090 (mse:0.559, mean:1.646, std:0.885)	count=499
+Total loss:	3.087 (mse:0.596, mean:1.824, std:0.666)	count=499
+Total loss:	3.034 (mse:0.576, mean:1.722, std:0.737)	count=499
+Total loss:	3.043 (mse:0.551, mean:1.612, std:0.881)	count=499
+Total loss:	3.068 (mse:0.568, mean:1.699, std:0.801)	count=499
+Total loss:	3.065 (mse:0.572, mean:1.728, std:0.765)	count=499
+Total loss:	3.638 (mse:0.689, mean:2.119, std:0.831)	count=499
+Total loss:	2.758 (mse:0.501, mean:1.478, std:0.779)	count=499
+Init alpha to be FP32
+Init alpha to be FP32
+Init alpha to be FP32
+Total loss:	0.180 (rec:0.176, pd:0.004, round:0.000)	b=0.00	count=500
+Total loss:	0.173 (rec:0.169, pd:0.004, round:0.000)	b=0.00	count=1000
+Total loss:	0.177 (rec:0.172, pd:0.004, round:0.000)	b=0.00	count=1500
+Total loss:	0.171 (rec:0.168, pd:0.003, round:0.000)	b=0.00	count=2000
+Total loss:	0.163 (rec:0.160, pd:0.003, round:0.000)	b=0.00	count=2500
+Total loss:	0.170 (rec:0.167, pd:0.003, round:0.000)	b=0.00	count=3000
+Total loss:	0.166 (rec:0.163, pd:0.003, round:0.000)	b=0.00	count=3500
+Total loss:	8282.668 (rec:0.169, pd:0.003, round:8282.496)	b=20.00	count=4000
+Total loss:	3858.248 (rec:0.165, pd:0.003, round:3858.081)	b=19.44	count=4500
+Total loss:	3567.093 (rec:0.163, pd:0.002, round:3566.927)	b=18.88	count=5000
+Total loss:	3360.660 (rec:0.182, pd:0.003, round:3360.475)	b=18.31	count=5500
+Total loss:	3180.943 (rec:0.175, pd:0.003, round:3180.765)	b=17.75	count=6000
+Total loss:	3017.762 (rec:0.166, pd:0.003, round:3017.594)	b=17.19	count=6500
+Total loss:	2861.733 (rec:0.180, pd:0.003, round:2861.550)	b=16.62	count=7000
+Total loss:	2710.349 (rec:0.165, pd:0.003, round:2710.181)	b=16.06	count=7500
+Total loss:	2561.421 (rec:0.177, pd:0.003, round:2561.241)	b=15.50	count=8000
+Total loss:	2414.264 (rec:0.166, pd:0.003, round:2414.095)	b=14.94	count=8500
+Total loss:	2265.016 (rec:0.161, pd:0.003, round:2264.852)	b=14.38	count=9000
+Total loss:	2117.336 (rec:0.175, pd:0.003, round:2117.158)	b=13.81	count=9500
+Total loss:	1966.467 (rec:0.172, pd:0.003, round:1966.292)	b=13.25	count=10000
+Total loss:	1811.947 (rec:0.177, pd:0.003, round:1811.766)	b=12.69	count=10500
+Total loss:	1657.740 (rec:0.165, pd:0.003, round:1657.572)	b=12.12	count=11000
+Total loss:	1494.229 (rec:0.182, pd:0.003, round:1494.043)	b=11.56	count=11500
+Total loss:	1330.434 (rec:0.178, pd:0.003, round:1330.253)	b=11.00	count=12000
+Total loss:	1164.396 (rec:0.180, pd:0.003, round:1164.212)	b=10.44	count=12500
+Total loss:	994.957 (rec:0.177, pd:0.003, round:994.777)	b=9.88	count=13000
+Total loss:	823.252 (rec:0.178, pd:0.003, round:823.071)	b=9.31	count=13500
+Total loss:	652.689 (rec:0.178, pd:0.003, round:652.508)	b=8.75	count=14000
+Total loss:	489.944 (rec:0.201, pd:0.003, round:489.740)	b=8.19	count=14500
+Total loss:	337.277 (rec:0.183, pd:0.003, round:337.091)	b=7.62	count=15000
+Total loss:	203.042 (rec:0.181, pd:0.003, round:202.857)	b=7.06	count=15500
+Total loss:	88.189 (rec:0.179, pd:0.003, round:88.007)	b=6.50	count=16000
+Total loss:	16.343 (rec:0.180, pd:0.003, round:16.160)	b=5.94	count=16500
+Total loss:	2.041 (rec:0.183, pd:0.003, round:1.855)	b=5.38	count=17000
+Total loss:	0.644 (rec:0.187, pd:0.003, round:0.454)	b=4.81	count=17500
+Total loss:	0.405 (rec:0.190, pd:0.003, round:0.213)	b=4.25	count=18000
+Total loss:	0.257 (rec:0.194, pd:0.003, round:0.060)	b=3.69	count=18500
+Total loss:	0.191 (rec:0.187, pd:0.003, round:0.000)	b=3.12	count=19000
+Total loss:	0.198 (rec:0.195, pd:0.003, round:0.000)	b=2.56	count=19500
+Total loss:	0.192 (rec:0.189, pd:0.003, round:0.000)	b=2.00	count=20000
+Reconstruction for block 1
+Start correcting 32 batches of data!
+Total loss:	1.323 (mse:0.155, mean:0.792, std:0.377)	count=499
+Total loss:	1.357 (mse:0.141, mean:0.880, std:0.336)	count=499
+Total loss:	1.402 (mse:0.153, mean:0.875, std:0.374)	count=499
+Total loss:	1.567 (mse:0.175, mean:1.013, std:0.380)	count=499
+Total loss:	1.435 (mse:0.147, mean:0.872, std:0.416)	count=499
+Total loss:	1.266 (mse:0.136, mean:0.783, std:0.347)	count=499
+Total loss:	1.302 (mse:0.152, mean:0.806, std:0.345)	count=499
+Total loss:	1.355 (mse:0.146, mean:0.872, std:0.337)	count=499
+Total loss:	1.446 (mse:0.164, mean:0.894, std:0.387)	count=499
+Total loss:	1.453 (mse:0.158, mean:0.937, std:0.358)	count=499
+Total loss:	1.453 (mse:0.153, mean:0.938, std:0.362)	count=499
+Total loss:	1.203 (mse:0.126, mean:0.753, std:0.323)	count=499
+Total loss:	1.312 (mse:0.143, mean:0.862, std:0.307)	count=499
+Total loss:	1.241 (mse:0.134, mean:0.801, std:0.306)	count=499
+Total loss:	1.318 (mse:0.144, mean:0.836, std:0.339)	count=499
+Total loss:	1.369 (mse:0.148, mean:0.852, std:0.369)	count=499
+Total loss:	1.345 (mse:0.147, mean:0.864, std:0.334)	count=499
+Total loss:	1.330 (mse:0.152, mean:0.813, std:0.365)	count=499
+Total loss:	1.414 (mse:0.167, mean:0.892, std:0.355)	count=499
+Total loss:	1.393 (mse:0.154, mean:0.883, std:0.356)	count=499
+Total loss:	1.484 (mse:0.179, mean:0.921, std:0.384)	count=499
+Total loss:	1.282 (mse:0.139, mean:0.816, std:0.327)	count=499
+Total loss:	1.484 (mse:0.176, mean:0.920, std:0.388)	count=499
+Total loss:	1.519 (mse:0.169, mean:0.979, std:0.371)	count=499
+Total loss:	1.370 (mse:0.158, mean:0.835, std:0.376)	count=499
+Total loss:	1.481 (mse:0.167, mean:0.974, std:0.340)	count=499
+Total loss:	1.470 (mse:0.163, mean:0.968, std:0.340)	count=499
+Total loss:	1.376 (mse:0.148, mean:0.820, std:0.408)	count=499
+Total loss:	1.511 (mse:0.168, mean:0.946, std:0.396)	count=499
+Total loss:	1.409 (mse:0.150, mean:0.884, std:0.375)	count=499
+Total loss:	1.491 (mse:0.165, mean:0.978, std:0.348)	count=499
+Total loss:	1.302 (mse:0.143, mean:0.814, std:0.345)	count=499
+Init alpha to be FP32
+Init alpha to be FP32
+Total loss:	0.272 (rec:0.268, pd:0.004, round:0.000)	b=0.00	count=500
+Total loss:	0.234 (rec:0.231, pd:0.003, round:0.000)	b=0.00	count=1000
+Total loss:	0.252 (rec:0.249, pd:0.003, round:0.000)	b=0.00	count=1500
+Total loss:	0.247 (rec:0.245, pd:0.003, round:0.000)	b=0.00	count=2000
+Total loss:	0.251 (rec:0.249, pd:0.003, round:0.000)	b=0.00	count=2500
+Total loss:	0.249 (rec:0.246, pd:0.003, round:0.000)	b=0.00	count=3000
+Total loss:	0.241 (rec:0.238, pd:0.003, round:0.000)	b=0.00	count=3500
+Total loss:	10544.603 (rec:0.234, pd:0.003, round:10544.365)	b=20.00	count=4000
+Total loss:	4833.420 (rec:0.250, pd:0.003, round:4833.167)	b=19.44	count=4500
+Total loss:	4464.605 (rec:0.262, pd:0.003, round:4464.340)	b=18.88	count=5000
+Total loss:	4193.587 (rec:0.259, pd:0.003, round:4193.326)	b=18.31	count=5500
+Total loss:	3956.000 (rec:0.244, pd:0.003, round:3955.754)	b=17.75	count=6000
+Total loss:	3736.429 (rec:0.230, pd:0.003, round:3736.197)	b=17.19	count=6500
+Total loss:	3528.588 (rec:0.248, pd:0.003, round:3528.337)	b=16.62	count=7000
+Total loss:	3326.292 (rec:0.241, pd:0.002, round:3326.048)	b=16.06	count=7500
+Total loss:	3128.454 (rec:0.243, pd:0.002, round:3128.209)	b=15.50	count=8000
+Total loss:	2932.832 (rec:0.231, pd:0.002, round:2932.598)	b=14.94	count=8500
+Total loss:	2736.519 (rec:0.250, pd:0.003, round:2736.267)	b=14.38	count=9000
+Total loss:	2542.913 (rec:0.254, pd:0.003, round:2542.657)	b=13.81	count=9500
+Total loss:	2347.183 (rec:0.270, pd:0.002, round:2346.911)	b=13.25	count=10000
+Total loss:	2151.707 (rec:0.260, pd:0.003, round:2151.444)	b=12.69	count=10500
+Total loss:	1957.517 (rec:0.248, pd:0.003, round:1957.266)	b=12.12	count=11000
+Total loss:	1761.912 (rec:0.249, pd:0.002, round:1761.661)	b=11.56	count=11500
+Total loss:	1566.243 (rec:0.270, pd:0.003, round:1565.970)	b=11.00	count=12000
+Total loss:	1366.786 (rec:0.256, pd:0.003, round:1366.528)	b=10.44	count=12500
+Total loss:	1170.735 (rec:0.249, pd:0.002, round:1170.485)	b=9.88	count=13000
+Total loss:	975.080 (rec:0.261, pd:0.003, round:974.817)	b=9.31	count=13500
+Total loss:	783.335 (rec:0.244, pd:0.002, round:783.088)	b=8.75	count=14000
+Total loss:	596.265 (rec:0.249, pd:0.003, round:596.013)	b=8.19	count=14500
+Total loss:	422.312 (rec:0.270, pd:0.003, round:422.040)	b=7.62	count=15000
+Total loss:	262.858 (rec:0.247, pd:0.003, round:262.608)	b=7.06	count=15500
+Total loss:	124.107 (rec:0.242, pd:0.003, round:123.862)	b=6.50	count=16000
+Total loss:	30.850 (rec:0.251, pd:0.003, round:30.597)	b=5.94	count=16500
+Total loss:	4.283 (rec:0.251, pd:0.003, round:4.029)	b=5.38	count=17000
+Total loss:	1.034 (rec:0.245, pd:0.003, round:0.786)	b=4.81	count=17500
+Total loss:	0.472 (rec:0.281, pd:0.003, round:0.188)	b=4.25	count=18000
+Total loss:	0.284 (rec:0.247, pd:0.003, round:0.033)	b=3.69	count=18500
+Total loss:	0.254 (rec:0.251, pd:0.003, round:0.000)	b=3.12	count=19000
+Total loss:	0.253 (rec:0.251, pd:0.003, round:0.000)	b=2.56	count=19500
+Total loss:	0.260 (rec:0.257, pd:0.002, round:0.000)	b=2.00	count=20000
+Reconstruction for block 0
+Start correcting 32 batches of data!
+Total loss:	3.963 (mse:0.766, mean:2.155, std:1.042)	count=499
+Total loss:	4.438 (mse:0.834, mean:2.623, std:0.981)	count=499
+Total loss:	4.557 (mse:0.904, mean:2.613, std:1.040)	count=499
+Total loss:	4.568 (mse:0.869, mean:2.690, std:1.009)	count=499
+Total loss:	4.458 (mse:0.829, mean:2.540, std:1.090)	count=499
+Total loss:	4.109 (mse:0.779, mean:2.327, std:1.003)	count=499
+Total loss:	3.888 (mse:0.728, mean:2.200, std:0.959)	count=499
+Total loss:	4.128 (mse:0.734, mean:2.396, std:0.998)	count=499
+Total loss:	4.178 (mse:0.758, mean:2.382, std:1.038)	count=499
+Total loss:	4.478 (mse:0.842, mean:2.644, std:0.993)	count=499
+Total loss:	4.664 (mse:0.876, mean:2.732, std:1.055)	count=499
+Total loss:	3.978 (mse:0.722, mean:2.324, std:0.931)	count=499
+Total loss:	4.256 (mse:0.762, mean:2.495, std:0.999)	count=499
+Total loss:	3.913 (mse:0.714, mean:2.270, std:0.929)	count=499
+Total loss:	4.211 (mse:0.792, mean:2.388, std:1.031)	count=499
+Total loss:	4.352 (mse:0.825, mean:2.438, std:1.089)	count=499
+Total loss:	4.161 (mse:0.781, mean:2.433, std:0.948)	count=499
+Total loss:	4.180 (mse:0.785, mean:2.395, std:1.000)	count=499
+Total loss:	4.194 (mse:0.810, mean:2.344, std:1.041)	count=499
+Total loss:	4.059 (mse:0.720, mean:2.321, std:1.018)	count=499
+Total loss:	4.670 (mse:0.956, mean:2.693, std:1.021)	count=499
+Total loss:	4.003 (mse:0.729, mean:2.270, std:1.004)	count=499
+Total loss:	4.353 (mse:0.841, mean:2.499, std:1.013)	count=499
+Total loss:	4.721 (mse:0.910, mean:2.728, std:1.082)	count=499
+Total loss:	4.094 (mse:0.758, mean:2.335, std:1.001)	count=499
+Total loss:	4.589 (mse:0.881, mean:2.757, std:0.952)	count=499
+Total loss:	4.470 (mse:0.833, mean:2.684, std:0.954)	count=499
+Total loss:	4.140 (mse:0.751, mean:2.306, std:1.084)	count=499
+Total loss:	4.858 (mse:1.003, mean:2.767, std:1.089)	count=499
+Total loss:	4.471 (mse:0.848, mean:2.610, std:1.013)	count=499
+Total loss:	4.483 (mse:0.863, mean:2.666, std:0.954)	count=499
+Total loss:	3.830 (mse:0.687, mean:2.174, std:0.969)	count=499
+Init alpha to be FP32
+Init alpha to be FP32
+Init alpha to be FP32
+Total loss:	0.326 (rec:0.323, pd:0.004, round:0.000)	b=0.00	count=500
+Total loss:	0.308 (rec:0.306, pd:0.003, round:0.000)	b=0.00	count=1000
+Total loss:	0.312 (rec:0.309, pd:0.004, round:0.000)	b=0.00	count=1500
+Total loss:	0.306 (rec:0.302, pd:0.004, round:0.000)	b=0.00	count=2000
+Total loss:	0.302 (rec:0.299, pd:0.003, round:0.000)	b=0.00	count=2500
+Total loss:	0.269 (rec:0.266, pd:0.003, round:0.000)	b=0.00	count=3000
+Total loss:	0.246 (rec:0.244, pd:0.003, round:0.000)	b=0.00	count=3500
+Total loss:	32287.666 (rec:0.269, pd:0.003, round:32287.395)	b=20.00	count=4000
+Total loss:	14661.892 (rec:0.270, pd:0.003, round:14661.618)	b=19.44	count=4500
+Total loss:	13466.849 (rec:0.262, pd:0.003, round:13466.584)	b=18.88	count=5000
+Total loss:	12539.405 (rec:0.252, pd:0.002, round:12539.150)	b=18.31	count=5500
+Total loss:	11719.693 (rec:0.247, pd:0.003, round:11719.443)	b=17.75	count=6000
+Total loss:	10950.229 (rec:0.254, pd:0.002, round:10949.972)	b=17.19	count=6500
+Total loss:	10217.680 (rec:0.246, pd:0.003, round:10217.431)	b=16.62	count=7000
+Total loss:	9516.419 (rec:0.256, pd:0.003, round:9516.160)	b=16.06	count=7500
+Total loss:	8832.941 (rec:0.248, pd:0.003, round:8832.690)	b=15.50	count=8000
+Total loss:	8168.866 (rec:0.246, pd:0.002, round:8168.617)	b=14.94	count=8500
+Total loss:	7522.088 (rec:0.272, pd:0.003, round:7521.813)	b=14.38	count=9000
+Total loss:	6893.805 (rec:0.248, pd:0.003, round:6893.554)	b=13.81	count=9500
+Total loss:	6285.644 (rec:0.249, pd:0.003, round:6285.393)	b=13.25	count=10000
+Total loss:	5694.309 (rec:0.258, pd:0.002, round:5694.048)	b=12.69	count=10500
+Total loss:	5113.703 (rec:0.263, pd:0.002, round:5113.438)	b=12.12	count=11000
+Total loss:	4557.013 (rec:0.240, pd:0.002, round:4556.770)	b=11.56	count=11500
+Total loss:	4016.207 (rec:0.268, pd:0.003, round:4015.937)	b=11.00	count=12000
+Total loss:	3491.297 (rec:0.240, pd:0.002, round:3491.055)	b=10.44	count=12500
+Total loss:	2983.045 (rec:0.260, pd:0.003, round:2982.783)	b=9.88	count=13000
+Total loss:	2496.219 (rec:0.251, pd:0.002, round:2495.965)	b=9.31	count=13500
+Total loss:	2024.483 (rec:0.241, pd:0.002, round:2024.239)	b=8.75	count=14000
+Total loss:	1585.719 (rec:0.250, pd:0.002, round:1585.467)	b=8.19	count=14500
+Total loss:	1169.262 (rec:0.247, pd:0.002, round:1169.012)	b=7.62	count=15000
+Total loss:	789.090 (rec:0.263, pd:0.003, round:788.825)	b=7.06	count=15500
+Total loss:	449.033 (rec:0.248, pd:0.003, round:448.783)	b=6.50	count=16000
+Total loss:	173.836 (rec:0.248, pd:0.002, round:173.585)	b=5.94	count=16500
+Total loss:	39.380 (rec:0.262, pd:0.003, round:39.115)	b=5.38	count=17000
+Total loss:	6.746 (rec:0.253, pd:0.002, round:6.491)	b=4.81	count=17500
+Total loss:	1.232 (rec:0.283, pd:0.003, round:0.945)	b=4.25	count=18000
+Total loss:	0.389 (rec:0.280, pd:0.002, round:0.106)	b=3.69	count=18500
+Total loss:	0.268 (rec:0.265, pd:0.003, round:0.000)	b=3.12	count=19000
+Total loss:	0.246 (rec:0.243, pd:0.003, round:0.000)	b=2.56	count=19500
+Total loss:	0.268 (rec:0.266, pd:0.003, round:0.000)	b=2.00	count=20000
+Reconstruction for block 1
+Start correcting 32 batches of data!
+Total loss:	3.650 (mse:0.619, mean:2.263, std:0.768)	count=499
+Total loss:	3.791 (mse:0.548, mean:2.500, std:0.743)	count=499
+Total loss:	3.966 (mse:0.684, mean:2.527, std:0.756)	count=499
+Total loss:	4.075 (mse:0.715, mean:2.568, std:0.792)	count=499
+Total loss:	3.712 (mse:0.628, mean:2.314, std:0.771)	count=499
+Total loss:	3.729 (mse:0.637, mean:2.333, std:0.759)	count=499
+Total loss:	3.517 (mse:0.580, mean:2.193, std:0.744)	count=499
+Total loss:	4.079 (mse:0.696, mean:2.603, std:0.780)	count=499
+Total loss:	3.723 (mse:0.604, mean:2.351, std:0.768)	count=499
+Total loss:	3.923 (mse:0.683, mean:2.462, std:0.778)	count=499
+Total loss:	4.071 (mse:0.767, mean:2.537, std:0.767)	count=499
+Total loss:	3.581 (mse:0.588, mean:2.279, std:0.713)	count=499
+Total loss:	3.725 (mse:0.594, mean:2.384, std:0.748)	count=499
+Total loss:	3.673 (mse:0.567, mean:2.356, std:0.749)	count=499
+Total loss:	4.082 (mse:0.749, mean:2.541, std:0.792)	count=499
+Total loss:	4.002 (mse:0.662, mean:2.547, std:0.793)	count=499
+Total loss:	3.701 (mse:0.594, mean:2.360, std:0.748)	count=499
+Total loss:	3.770 (mse:0.670, mean:2.353, std:0.748)	count=499
+Total loss:	3.946 (mse:0.774, mean:2.414, std:0.757)	count=499
+Total loss:	3.565 (mse:0.589, mean:2.179, std:0.797)	count=499
+Total loss:	4.360 (mse:0.803, mean:2.767, std:0.789)	count=499
+Total loss:	3.809 (mse:0.635, mean:2.382, std:0.793)	count=499
+Total loss:	3.836 (mse:0.633, mean:2.469, std:0.734)	count=499
+Total loss:	4.036 (mse:0.699, mean:2.584, std:0.753)	count=499
+Total loss:	3.413 (mse:0.486, mean:2.183, std:0.744)	count=499
+Total loss:	4.056 (mse:0.726, mean:2.538, std:0.792)	count=499
+Total loss:	4.277 (mse:0.790, mean:2.722, std:0.766)	count=499
+Total loss:	3.874 (mse:0.715, mean:2.354, std:0.805)	count=499
+Total loss:	4.463 (mse:0.865, mean:2.837, std:0.761)	count=499
+Total loss:	4.092 (mse:0.684, mean:2.645, std:0.762)	count=499
+Total loss:	4.344 (mse:0.795, mean:2.780, std:0.769)	count=499
+Total loss:	3.589 (mse:0.577, mean:2.242, std:0.771)	count=499
+Init alpha to be FP32
+Init alpha to be FP32
+Total loss:	45.356 (rec:45.352, pd:0.004, round:0.000)	b=0.00	count=500
+Total loss:	39.045 (rec:39.042, pd:0.003, round:0.000)	b=0.00	count=1000
+Total loss:	37.450 (rec:37.446, pd:0.004, round:0.000)	b=0.00	count=1500
+Total loss:	35.399 (rec:35.396, pd:0.003, round:0.000)	b=0.00	count=2000
+Total loss:	35.539 (rec:35.536, pd:0.003, round:0.000)	b=0.00	count=2500
+Total loss:	34.501 (rec:34.498, pd:0.003, round:0.000)	b=0.00	count=3000
+Total loss:	30.799 (rec:30.796, pd:0.003, round:0.000)	b=0.00	count=3500
+Total loss:	42215.191 (rec:31.682, pd:0.003, round:42183.504)	b=20.00	count=4000
+Total loss:	25903.383 (rec:33.378, pd:0.003, round:25870.002)	b=19.44	count=4500
+Total loss:	24303.033 (rec:31.658, pd:0.003, round:24271.371)	b=18.88	count=5000
+Total loss:	23175.588 (rec:32.431, pd:0.003, round:23143.152)	b=18.31	count=5500
+Total loss:	22201.137 (rec:29.875, pd:0.003, round:22171.258)	b=17.75	count=6000
+Total loss:	21305.750 (rec:29.388, pd:0.003, round:21276.359)	b=17.19	count=6500
+Total loss:	20456.277 (rec:34.441, pd:0.003, round:20421.832)	b=16.62	count=7000
+Total loss:	19627.971 (rec:28.993, pd:0.003, round:19598.975)	b=16.06	count=7500
+Total loss:	18828.830 (rec:31.206, pd:0.003, round:18797.621)	b=15.50	count=8000
+Total loss:	18036.133 (rec:31.575, pd:0.003, round:18004.555)	b=14.94	count=8500
+Total loss:	17248.275 (rec:29.004, pd:0.004, round:17219.268)	b=14.38	count=9000
+Total loss:	16466.592 (rec:28.079, pd:0.003, round:16438.510)	b=13.81	count=9500
+Total loss:	15682.914 (rec:29.357, pd:0.003, round:15653.553)	b=13.25	count=10000
+Total loss:	14897.645 (rec:28.280, pd:0.003, round:14869.361)	b=12.69	count=10500
+Total loss:	14101.877 (rec:27.494, pd:0.004, round:14074.379)	b=12.12	count=11000
+Total loss:	13298.965 (rec:27.319, pd:0.003, round:13271.644)	b=11.56	count=11500
+Total loss:	12482.938 (rec:31.293, pd:0.004, round:12451.641)	b=11.00	count=12000
+Total loss:	11649.279 (rec:29.271, pd:0.004, round:11620.004)	b=10.44	count=12500
+Total loss:	10805.068 (rec:31.211, pd:0.004, round:10773.854)	b=9.88	count=13000
+Total loss:	9928.127 (rec:27.149, pd:0.003, round:9900.975)	b=9.31	count=13500
+Total loss:	9033.179 (rec:26.070, pd:0.002, round:9007.106)	b=8.75	count=14000
+Total loss:	8113.229 (rec:26.896, pd:0.002, round:8086.331)	b=8.19	count=14500
+Total loss:	7165.848 (rec:27.874, pd:0.003, round:7137.972)	b=7.62	count=15000
+Total loss:	6194.188 (rec:30.217, pd:0.004, round:6163.968)	b=7.06	count=15500
+Total loss:	5194.216 (rec:30.081, pd:0.003, round:5164.132)	b=6.50	count=16000
+Total loss:	4169.703 (rec:28.098, pd:0.002, round:4141.603)	b=5.94	count=16500
+Total loss:	3139.227 (rec:30.387, pd:0.003, round:3108.837)	b=5.38	count=17000
+Total loss:	2121.771 (rec:29.690, pd:0.003, round:2092.079)	b=4.81	count=17500
+Total loss:	1174.953 (rec:30.133, pd:0.004, round:1144.815)	b=4.25	count=18000
+Total loss:	439.871 (rec:30.453, pd:0.003, round:409.416)	b=3.69	count=18500
+Total loss:	101.080 (rec:30.039, pd:0.003, round:71.038)	b=3.12	count=19000
+Total loss:	39.807 (rec:27.708, pd:0.003, round:12.096)	b=2.56	count=19500
+Total loss:	34.603 (rec:30.477, pd:0.003, round:4.123)	b=2.00	count=20000
+Reconstruction for layer fc
+Start correcting 32 batches of data!
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Total loss:	0.000 (mse:0.000, mean:0.000, std:0.000)	count=499
+Init alpha to be FP32
+Total loss:	33.212 (rec:33.208, pd:0.004, round:0.000)	b=0.00	count=500
+Total loss:	25.175 (rec:25.171, pd:0.003, round:0.000)	b=0.00	count=1000
+Total loss:	27.970 (rec:27.967, pd:0.003, round:0.000)	b=0.00	count=1500
+Total loss:	22.302 (rec:22.299, pd:0.003, round:0.000)	b=0.00	count=2000
+Total loss:	26.683 (rec:26.680, pd:0.003, round:0.000)	b=0.00	count=2500
+Total loss:	24.517 (rec:24.514, pd:0.003, round:0.000)	b=0.00	count=3000
+Total loss:	19.527 (rec:19.525, pd:0.002, round:0.000)	b=0.00	count=3500
+Total loss:	4604.558 (rec:23.156, pd:0.002, round:4581.400)	b=20.00	count=4000
+Total loss:	3174.828 (rec:23.488, pd:0.002, round:3151.337)	b=19.44	count=4500
+Total loss:	3002.719 (rec:22.724, pd:0.003, round:2979.992)	b=18.88	count=5000
+Total loss:	2886.511 (rec:19.963, pd:0.002, round:2866.546)	b=18.31	count=5500
+Total loss:	2796.494 (rec:23.530, pd:0.002, round:2772.962)	b=17.75	count=6000
+Total loss:	2709.026 (rec:21.866, pd:0.003, round:2687.158)	b=17.19	count=6500
+Total loss:	2630.987 (rec:21.612, pd:0.002, round:2609.373)	b=16.62	count=7000
+Total loss:	2558.245 (rec:24.168, pd:0.003, round:2534.075)	b=16.06	count=7500
+Total loss:	2480.314 (rec:21.457, pd:0.003, round:2458.855)	b=15.50	count=8000
+Total loss:	2405.092 (rec:20.590, pd:0.002, round:2384.500)	b=14.94	count=8500
+Total loss:	2333.399 (rec:22.496, pd:0.003, round:2310.901)	b=14.38	count=9000
+Total loss:	2258.379 (rec:21.947, pd:0.002, round:2236.429)	b=13.81	count=9500
+Total loss:	2182.672 (rec:21.625, pd:0.003, round:2161.045)	b=13.25	count=10000
+Total loss:	2109.446 (rec:25.200, pd:0.003, round:2084.242)	b=12.69	count=10500
+Total loss:	2027.833 (rec:21.571, pd:0.003, round:2006.260)	b=12.12	count=11000
+Total loss:	1951.849 (rec:24.944, pd:0.003, round:1926.902)	b=11.56	count=11500
+Total loss:	1869.605 (rec:27.197, pd:0.003, round:1842.404)	b=11.00	count=12000
+Total loss:	1780.311 (rec:24.659, pd:0.003, round:1755.648)	b=10.44	count=12500
+Total loss:	1688.846 (rec:23.580, pd:0.003, round:1665.263)	b=9.88	count=13000
+Total loss:	1592.492 (rec:20.689, pd:0.002, round:1571.800)	b=9.31	count=13500
+Total loss:	1494.521 (rec:22.487, pd:0.002, round:1472.031)	b=8.75	count=14000
+Total loss:	1393.034 (rec:24.851, pd:0.003, round:1368.180)	b=8.19	count=14500
+Total loss:	1274.568 (rec:20.470, pd:0.002, round:1254.097)	b=7.62	count=15000
+Total loss:	1160.595 (rec:24.944, pd:0.003, round:1135.648)	b=7.06	count=15500
+Total loss:	1033.938 (rec:25.305, pd:0.003, round:1008.630)	b=6.50	count=16000
+Total loss:	900.172 (rec:27.620, pd:0.003, round:872.548)	b=5.94	count=16500
+Total loss:	752.796 (rec:25.516, pd:0.003, round:727.277)	b=5.38	count=17000
+Total loss:	601.730 (rec:28.303, pd:0.003, round:573.424)	b=4.81	count=17500
+Total loss:	437.291 (rec:25.988, pd:0.003, round:411.300)	b=4.25	count=18000
+Total loss:	271.844 (rec:26.119, pd:0.003, round:245.722)	b=3.69	count=18500
+Total loss:	115.927 (rec:29.718, pd:0.003, round:86.206)	b=3.12	count=19000
+Total loss:	36.992 (rec:31.140, pd:0.003, round:5.849)	b=2.56	count=19500
+Total loss:	28.723 (rec:28.703, pd:0.003, round:0.018)	b=2.00	count=20000
+Test: [  0/782]	Time  2.271 ( 2.271)	Acc@1  84.38 ( 84.38)	Acc@5  92.19 ( 92.19)
+Test: [100/782]	Time  0.369 ( 0.230)	Acc@1  89.06 ( 76.04)	Acc@5  98.44 ( 92.14)
+Test: [200/782]	Time  0.073 ( 0.218)	Acc@1  73.44 ( 75.54)	Acc@5  92.19 ( 93.18)
+Test: [300/782]	Time  1.557 ( 0.224)	Acc@1  76.56 ( 75.80)	Acc@5  95.31 ( 93.31)
+Test: [400/782]	Time  0.076 ( 0.217)	Acc@1  68.75 ( 72.88)	Acc@5  92.19 ( 91.53)
+Test: [500/782]	Time  0.681 ( 0.215)	Acc@1  76.56 ( 71.33)	Acc@5  92.19 ( 90.26)
+Test: [600/782]	Time  0.457 ( 0.213)	Acc@1  76.56 ( 70.04)	Acc@5  90.62 ( 89.37)
+Test: [700/782]	Time  0.074 ( 0.212)	Acc@1  67.19 ( 68.91)	Acc@5  93.75 ( 88.73)
+ * Acc@1 68.870 Acc@5 88.768
+Full quantization (W4A4) accuracy: 68.8699951171875
