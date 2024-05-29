@@ -28,7 +28,7 @@ init_amode="mse"
 prob=0.5
 input_prob=0.5
 lamb_r=0.1
-T=40
+T=4.0
 bn_lr=1e-3
 lamb_c=0.02
 
