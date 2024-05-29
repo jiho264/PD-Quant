@@ -248,7 +248,7 @@ class LossFunction:
 
     def JensenShannonDivLoss(self, output, output_fp):
         """
-        24.05.28 @Lee
+        24.05.28 @jiho264
         It was inspired by https://arxiv.org/pdf/2109.03228
         they applied JS-div loss.
 

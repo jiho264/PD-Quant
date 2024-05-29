@@ -255,6 +255,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--lamb_c", default=0.02, type=float, help="hyper-parameter for DC"
     )
+    parser.add_argument("--filename", default="tmp", type=str, help="name of pth file")
     args = parser.parse_args()
 
     seed_all(args.seed)
@@ -367,5 +368,5 @@ if __name__ == "__main__":
     # Save model
     torch.save(
         qnn.state_dict(),
-        f"logs/{args.arch}/W{args.n_bits_w}A{args.n_bits_a}_calib{args.num_samples}_batch{args.batch_size}_iterw{args.iters_w}.pth",
+        f"logs/W{args.n_bits_w}A{args.n_bits_a}_calib{args.num_samples}_batch{args.batch_size}_iterW{args.iters_w}/{args.arch}/{args.filename}.pth",
     )
