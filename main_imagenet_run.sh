@@ -25,14 +25,14 @@ lr=4e-5
 init_wmode="mse"
 init_amode="mse"
 
-prob=0.5
-input_prob=0.5
+prob=1
+input_prob=1
 lamb_r=0.1
 T=4.0
 bn_lr=1e-3
 lamb_c=0.02
 
-filename="tmp" # Filename to save the model / 24.05.29 @jiho264
+filename="prob=1_inputprob=1" # Filename to save the model / 24.05.29 @jiho264
 # Logging arguments to a file
 log_file="logs/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterW${iters_w}/${arch}/${filename}.log"
 # Clear the log file

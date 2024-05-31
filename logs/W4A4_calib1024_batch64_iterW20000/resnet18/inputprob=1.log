@@ -1,0 +1,291 @@
+START : 2024-05-30 00:32:33
+
+General parameters for data and model
+- seed = 1005 (default = 1005)
+- arch = resnet18
+- batch_size = 64 (default = 64)
+- workers = 8 (default = 4)
+- data_path = data/ImageNet
+
+Quantization parameters
+- n_bits_w = 4 (default = 4)
+- channel_wise = True (default = True)
+- n_bits_a = 4 (default = 4)
+- disable_8bit_head_stem = not use (action = 'store_true')
+
+Weight calibration parameters
+- num_samples = 1024 (default = 1024)
+- iters_w = 20000 (default = 20000)
+- weight = 0.01 (default = 0.01)
+- keep_cpu = not use (action = 'store_true')
+- b_start = 20 (default = 20)
+- b_end = 2 (default = 2)
+- warmup = 0.2 (default = 0.2)
+
+Activation calibration parameters
+- lr = 4e-5 (default = 4e-5)
+- init_wmode = mse (default = 'mse', choices = ['minmax', 'mse', 'minmax_scale'])
+- init_amode = mse (default = 'mse', choices = ['minmax', 'mse', 'minmax_scale'])
+- prob = 0.5 (default = 0.5)
+- input_prob = 1 (default = 0.5)
+- lamb_r = 0.1 (default = 0.1)
+- T = 4.0 (default = 4.0)
+- bn_lr = 1e-3 (default = 1e-3)
+- lamb_c = 0.02 (default = 0.02)
+
+-------------------------------------------------------------------------------------------
+
+==> Using Pytorch Dataset
+the quantized model is below!
+QuantModel(
+  (model): ResNet(
+    (conv1): QuantModule(
+      wbit=4, abit=4, disable_act_quant=False
+      (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      (norm_function): StraightThrough()
+      (activation_function): ReLU(inplace=True)
+    )
+    (bn1): StraightThrough()
+    (relu): StraightThrough()
+    (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+    (layer1): Sequential(
+      (0): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+      (1): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+    )
+    (layer2): Sequential(
+      (0): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (downsample): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+      (1): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+    )
+    (layer3): Sequential(
+      (0): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (downsample): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+      (1): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+    )
+    (layer4): Sequential(
+      (0): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (downsample): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+      (1): QuantBasicBlock(
+        (conv1): QuantModule(
+          wbit=4, abit=4, disable_act_quant=False
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): ReLU(inplace=True)
+        )
+        (conv2): QuantModule(
+          wbit=4, abit=4, disable_act_quant=True
+          (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+          (norm_function): StraightThrough()
+          (activation_function): StraightThrough()
+        )
+        (activation_function): ReLU(inplace=True)
+        (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      )
+    )
+    (avgpool): AdaptiveAvgPool2d(output_size=(1, 1))
+    (fc): QuantModule(
+      wbit=4, abit=4, disable_act_quant=True
+      (weight_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      (act_quantizer): UniformAffineQuantizer(bit=4, is_training=False, inited=True)
+      (norm_function): StraightThrough()
+      (activation_function): StraightThrough()
+    )
+  )
+)
+Reconstruction for layer conv1
+Start correcting 32 batches of data!
+Total loss:	21.192 (mse:4.362, mean:10.938, std:5.892)	count=499
+Total loss:	23.901 (mse:5.069, mean:12.871, std:5.961)	count=499
+Total loss:	20.062 (mse:4.695, mean:9.869, std:5.498)	count=499
+Total loss:	27.691 (mse:5.420, mean:15.881, std:6.390)	count=499
+Total loss:	23.312 (mse:4.992, mean:11.990, std:6.330)	count=499
+Total loss:	22.521 (mse:4.832, mean:11.838, std:5.851)	count=499
+Total loss:	17.219 (mse:4.161, mean:7.658, std:5.399)	count=499
+Total loss:	23.394 (mse:5.177, mean:12.602, std:5.616)	count=499
+Total loss:	23.555 (mse:5.144, mean:11.495, std:6.916)	count=499
+Total loss:	18.540 (mse:4.392, mean:7.964, std:6.184)	count=499
+Total loss:	22.983 (mse:4.784, mean:12.286, std:5.913)	count=499
+Total loss:	18.748 (mse:4.482, mean:8.940, std:5.326)	count=499
+Total loss:	27.137 (mse:5.383, mean:15.000, std:6.754)	count=499
+Total loss:	17.387 (mse:4.084, mean:8.682, std:4.620)	count=499
+Total loss:	23.204 (mse:5.382, mean:11.215, std:6.607)	count=499
+Total loss:	24.122 (mse:5.588, mean:11.672, std:6.862)	count=499
+Total loss:	16.759 (mse:3.887, mean:7.799, std:5.072)	count=499
+Total loss:	23.370 (mse:4.916, mean:12.983, std:5.471)	count=499
+Total loss:	19.351 (mse:3.939, mean:10.852, std:4.560)	count=499
+Total loss:	21.531 (mse:4.979, mean:8.469, std:8.083)	count=499
+Total loss:	17.631 (mse:4.097, mean:8.545, std:4.990)	count=499
+Total loss:	21.789 (mse:4.727, mean:10.654, std:6.408)	count=499
+Total loss:	24.433 (mse:5.154, mean:13.821, std:5.458)	count=499
+Total loss:	20.636 (mse:4.968, mean:9.557, std:6.111)	count=499
+Total loss:	28.744 (mse:5.958, mean:15.290, std:7.496)	count=499
+Total loss:	19.619 (mse:5.111, mean:8.604, std:5.904)	count=499
+Total loss:	19.674 (mse:4.472, mean:9.361, std:5.841)	count=499
+Total loss:	22.065 (mse:5.389, mean:9.812, std:6.865)	count=499
+Total loss:	21.564 (mse:4.740, mean:10.878, std:5.946)	count=499
+Total loss:	19.739 (mse:4.704, mean:9.016, std:6.019)	count=499
+Total loss:	20.763 (mse:4.583, mean:9.675, std:6.505)	count=499
+Total loss:	20.297 (mse:4.723, mean:9.487, std:6.088)	count=499
+Init alpha to be FP32
+END : 2024-05-30 00:37:36
+Init alpha to be FP32
+Traceback (most recent call last):
+  File "/home/lee/Desktop/PD-Quant/main_imagenet.py", line 359, in <module>
+    recon_model(qnn, fp_model)
+  File "/home/lee/Desktop/PD-Quant/main_imagenet.py", line 356, in recon_model
+    recon_model(module, fp_module)
+  File "/home/lee/Desktop/PD-Quant/main_imagenet.py", line 351, in recon_model
+    set_weight_act_quantize_params(module, fp_module)
+  File "/home/lee/Desktop/PD-Quant/main_imagenet.py", line 336, in set_weight_act_quantize_params
+    layer_reconstruction(qnn, fp_model, module, fp_module, **kwargs)
+  File "/home/lee/Desktop/PD-Quant/quant/layer_recon.py", line 177, in layer_reconstruction
+    cur_inp = torch.cat((drop_inp, cur_inp))
+                         ^^^^^^^^
+UnboundLocalError: cannot access local variable 'drop_inp' where it is not associated with a value
+Usage: file [-bcCdEhikLlNnprsSvzZ0] [--apple] [--extension] [--mime-encoding]
+            [--mime-type] [-e <testname>] [-F <separator>]  [-f <namefile>]
+            [-m <magicfiles>] [-P <parameter=value>] [--exclude-quiet]
+            <file> ...
+       file -C [-m <magicfiles>]
+       file [--help]
+(py311) lee@AI-LAP:~/Desktop/PD-Quant$ 
