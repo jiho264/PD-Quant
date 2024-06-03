@@ -1,6 +1,6 @@
 # Default arguments
 seed=1005
-arch="resnet18"
+arch="resnet50"
 batch_size=64
 workers=8
 data_path="data/ImageNet"
@@ -25,14 +25,14 @@ lr=4e-5
 init_wmode="mse"
 init_amode="mse"
 
-prob=1
+prob=0.5
 input_prob=1
 lamb_r=0.1
 T=4.0
 bn_lr=1e-3
 lamb_c=0.02
 
-filename="prob=1_inputprob=1" # Filename to save the model / 24.05.29 @jiho264
+filename="default" # Filename to save the model / 24.05.29 @jiho264
 # Logging arguments to a file
 log_file="logs/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterW${iters_w}/${arch}/${filename}.log"
 # Clear the log file
