@@ -35,7 +35,15 @@ def get_dc_fp_init(
 
 
 def set_weight_quantize_params(model):
+    """24.06.05 @jiho264
+    try appling min/max quantization on last block
+    """
+    from .quant_block import QuantBasicBlock
+    from . import quant_layer  # have to import like this..
+
     for module in model.modules():
+        if isinstance(module, QuantBasicBlock):
+            quant_layer.stageCounter += 1
         if isinstance(module, QuantModule):
             module.weight_quantizer.set_inited(False)
             """caculate the step size and zero point for weight quantizer"""
