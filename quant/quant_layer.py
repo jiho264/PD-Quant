@@ -3,9 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from typing import Union
 
-# for last block / 24.06.05 @jiho264
-stageCounter = 0
-
 
 class StraightThrough(nn.Module):
     def __init__(self):
@@ -149,9 +146,6 @@ class UniformAffineQuantizer(nn.Module):
         return x_float_q
 
     def perform_2D_search(self, x):
-        # 2D for S_a / 24.06.05 @jiho264
-        print("2D", stageCounter)
-
         if self.channel_wise:
             y = torch.flatten(x, 1)
             x_min, x_max = torch.aminmax(y, dim=1)
@@ -164,11 +158,6 @@ class UniformAffineQuantizer(nn.Module):
         best_score = torch.zeros_like(x_min) + (1e10)
         best_min = x_min.clone()
         best_max = x_max.clone()
-        # for last block / 24.06.05 @jiho264
-        if stageCounter == 8:
-            print("Using Min/Max quantization")
-            return best_min, best_max
-
         # enumerate xrange
         for i in range(1, self.num + 1):
             tmp_min = torch.zeros_like(x_min)
@@ -186,9 +175,6 @@ class UniformAffineQuantizer(nn.Module):
         return best_min, best_max
 
     def perform_1D_search(self, x):
-        # 1D for S_a / 24.06.05 @jiho264
-        print("1D")
-
         if self.channel_wise:
             y = torch.flatten(x, 1)
             x_min, x_max = torch.aminmax(y, dim=1)
