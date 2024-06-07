@@ -1,6 +1,6 @@
 # Default arguments
 seed=1005
-arch="resnet50"
+arch="resnet18"
 batch_size=64
 workers=8
 data_path="data/ImageNet"
