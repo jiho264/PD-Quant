@@ -1,7 +1,7 @@
 # Default arguments
 seed=1005
-arch="resnet18"
-batch_size=64
+arch="resnet152"
+batch_size=16
 workers=8
 data_path="data/ImageNet"
 
@@ -11,8 +11,8 @@ channel_wise=True
 n_bits_a=4
 
 # Weight calibration parameters
-num_samples=1024
-iters_w=20000
+num_samples=64
+iters_w=100
 weight=0.01
 
 b_start=20
@@ -32,7 +32,7 @@ T=4.0
 bn_lr=1e-3
 lamb_c=0.02
 
-filename="MinMaxQuantLastBlock" # Filename to save the model / 24.05.29 @jiho264
+filename="default" # Filename to save the model / 24.05.29 @jiho264
 # Logging arguments to a file
 log_file="logs/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterW${iters_w}/${arch}/${filename}.log"
 # Clear the log file

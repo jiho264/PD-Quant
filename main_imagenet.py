@@ -157,6 +157,7 @@ if __name__ == "__main__":
         choices=[
             "resnet18",
             "resnet50",
+            "resnet152",
             "mobilenetv2",
             "regnetx_600m",
             "regnetx_3200m",
