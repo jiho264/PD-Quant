@@ -3,6 +3,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from typing import Union
 
+# 24.06.09 @jiho264 add a Log2Quantizer
+import numpy as np
+from torch.nn.parameter import Parameter
+
 
 class StraightThrough(nn.Module):
     def __init__(self):
@@ -27,6 +31,83 @@ def lp_loss(pred, tgt, p=2.0, reduction="none"):
         return (pred - tgt).abs().pow(p).sum(1).mean()
     else:
         return (pred - tgt).abs().pow(p).mean()
+
+
+# 24.06.09 @jiho264 add a Log2Quantizer
+class LogSqrt2Quantizer(nn.Module):
+    """
+    PyTorch Function that can be used for asymmetric quantization (also called uniform affine
+    quantization). Quantizes its argument in the forward pass, passes the gradient 'straight
+    through' on the backward pass, ignoring the quantization that occurred.
+    Based on https://arxiv.org/abs/1806.08342.
+    :param n_bits: number of bit for quantization
+    :param channel_wise: if True, compute scale and zero_point in each channel
+    """
+
+    def __init__(
+        self, n_bits: int = 8, channel_wise: bool = False, is_act: bool = False
+    ):
+        super(LogSqrt2Quantizer, self).__init__()
+        assert 2 <= n_bits <= 8, "bitwidth not supported"
+        self.n_bits = n_bits
+        self.n_levels = 2**self.n_bits
+        self.delta = None
+        self.register_buffer("inited", torch.zeros(1))
+        self.channel_wise = channel_wise
+        self.is_act = is_act
+
+    def forward(self, x: torch.Tensor):
+        if self.inited == 0:
+            delta = self.init_quantization_scale(x)
+            self.delta = Parameter(delta).contiguous()
+
+            self.inited.fill_(1)
+
+        x = x + self.delta
+        x = self.logk(x, self.base)
+        delta = (self.maxv - self.minv) / (self.n_levels)
+        x_int = round_ste((x - self.minv) / delta)
+        x_int = torch.clamp(x_int, 0, self.n_levels)
+        x_float_q = self.base ** round_ste((x_int * delta + self.minv))
+        x_dequant = x_float_q - self.delta
+
+        return x_dequant
+
+    def init_quantization_scale(self, x: torch.Tensor):
+        x_clone = x.clone().detach()
+        cur_bias = -10
+        self.base = 2
+        best_score = 1e10
+        for bias in [0.001, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.5, 1.0]:
+            x_q, maxv, minv = self.quantize(x_clone, bias)
+            score = lp_loss(x_clone, x_q, p=2, reduction="all")
+            if score < best_score:
+                best_score = score
+                cur_bias = bias
+                self.maxv = maxv
+                self.minv = minv
+        return torch.tensor(cur_bias)
+
+    def logk(self, x, k):
+        natural_log = torch.log(x)
+        log_k = natural_log / torch.log(torch.tensor(k, dtype=x.dtype))
+        return log_k
+
+    def quantize(self, x, bias):
+
+        x = x + bias
+        x = self.logk(x, self.base)
+        maxv = torch.max(x)
+        minv = torch.min(x)
+
+        delta = (maxv - minv) / (self.n_levels - 1)
+        x_int = round_ste((x - minv) / delta)
+        x_int = torch.clamp(x_int, 0, self.n_levels - 1)
+        # x_int = torch.clamp(x_int, 0, self.n_levels)
+        x_float_q = self.base ** torch.round((x_int * delta + minv))
+        x_float_q = x_float_q - bias
+
+        return x_float_q, maxv, minv
 
 
 class UniformAffineQuantizer(nn.Module):
