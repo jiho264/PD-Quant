@@ -271,6 +271,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--lamb_c", default=0.02, type=float, help="hyper-parameter for DC"
     )
+    parser.add_argument("--filename", default="tmp", type=str, help="name of pth file")
     args = parser.parse_args()
 
     seed_all(args.seed)
@@ -283,7 +284,7 @@ if __name__ == "__main__":
     cnn.cuda()
     cnn.eval()
 
-    print("Full Precision accuracy: {}".format(validate_model(test_loader, cnn)))
+    # print("Full Precision accuracy: {}".format(validate_model(test_loader, cnn)))
 
     fp_model = copy.deepcopy(cnn)
     fp_model.cuda()
@@ -322,11 +323,12 @@ if __name__ == "__main__":
         qnn.set_first_last_layer_to_8bit()
 
     qnn.disable_network_output_quantization()
-    # print("the quantized model is below!")
-    # print(qnn)
-    cali_data, cali_target = get_train_samples(
-        train_loader, num_samples=args.num_samples
-    )
+    print("the quantized model is below!")
+    print(qnn)
+    # cali_data, cali_target = get_train_samples(
+    #     train_loader, num_samples=args.num_samples
+    # )
+    cali_data, cali_target = None, None
     device = next(qnn.parameters()).device
 
     # Kwargs for weight rounding calibration
@@ -382,37 +384,12 @@ if __name__ == "__main__":
 
     qnn.load_state_dict(
         torch.load(
-            f"logs/{args.arch}/W{args.n_bits_w}A{args.n_bits_a}_calib{args.num_samples}_batch{args.batch_size}_iterw{args.iters_w}.pth"
+            # f"logs/W{args.n_bits_w}A{args.n_bits_a}_calib{args.num_samples}_batch{args.batch_size}_iterw{args.iters_w}/{args.arch}/{args.filename}.pth"
+            "logs/W4A4_calib1024_batch64_iterW20000/resnet18/backup/default.pth"
         )
     )
 
-    def printQuantizerConfig(model: nn.Module):
-        """
-        Print the sensitivity of each layer/block in the model.
-        The sensitivity is L2-distance between the original output and the quantized output.
-
-        Args:
-            model (nn.Module): Quantized Model
-
-        Returns:
-            Dict: Sensitivity of each layer/block
-        """
-
-        for name, module in model.named_children():
-            if isinstance(module, QuantModule):
-                if module.use_weight_quant is True:
-                    print(f"{name} : {module.weight_quantizer.n_bits}-bits")
-                continue
-            elif isinstance(module, BaseQuantBlock):
-                if module.use_weight_quant is True:
-                    print(f"{name} : {module.act_quantizer.n_bits}-bits")
-                continue
-            else:
-                printQuantizerConfig(module)
-
     qnn.set_quant_state(weight_quant=True, act_quant=True)
-
-    printQuantizerConfig(qnn)
 
     print(
         "Full quantization (W{}A{}) accuracy: {}".format(

@@ -32,8 +32,9 @@ T=4.0
 bn_lr=1e-3
 lamb_c=0.02
 
+filename="backup/default" # Filename to save the model / 24.05.29 @jiho264
 # Logging arguments to a file
-log_file="logs/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterw${iters_w}/${arch}/fromCheckPoint.log"
+log_file="logs/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterW${iters_w}/${arch}/${filename}_fromPTH.log"
 # Clear the log file
 > $log_file
 echo "START : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $log_file
@@ -108,6 +109,7 @@ python main_imagenet_fromCheckPoint.py \
     --T $T \
     --bn_lr $bn_lr \
     --lamb_c $lamb_c \
+    --filename $filename \
     | tee -a $log_file
 
 echo "END : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $log_file
