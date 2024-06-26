@@ -384,15 +384,15 @@ if __name__ == "__main__":
 
     qnn.load_state_dict(
         torch.load(
-            # f"logs/W{args.n_bits_w}A{args.n_bits_a}_calib{args.num_samples}_batch{args.batch_size}_iterw{args.iters_w}/{args.arch}/{args.filename}.pth"
-            "logs/W4A4_calib1024_batch64_iterW20000/resnet18/backup/default.pth"
+            f"logs/W{args.n_bits_w}A{args.n_bits_a}_calib{args.num_samples}_batch{args.batch_size}_iterW{args.iters_w}/{args.arch}/{args.filename}.pth"
+            # "logs/W4A4_calib1024_batch64_iterW20000/resnet18/backup/default.pth"
         )
     )
-
+    print("After calibration")
     qnn.set_quant_state(weight_quant=True, act_quant=True)
 
-    print(
-        "Full quantization (W{}A{}) accuracy: {}".format(
-            args.n_bits_w, args.n_bits_a, validate_model(test_loader, qnn)
-        )
-    )
+    # print(
+    #     "Full quantization (W{}A{}) accuracy: {}".format(
+    #         args.n_bits_w, args.n_bits_a, validate_model(test_loader, qnn)
+    #     )
+    # )

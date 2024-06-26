@@ -6,9 +6,9 @@ workers=8
 data_path="data/ImageNet"
 
 # Quantization parameters
-n_bits_w=4
+n_bits_w=8
 channel_wise=True
-n_bits_a=4
+n_bits_a=8
 
 # Weight calibration parameters
 num_samples=1024
@@ -32,7 +32,7 @@ T=4.0
 bn_lr=1e-3
 lamb_c=0.02
 
-filename="backup/default" # Filename to save the model / 24.05.29 @jiho264
+filename="default" # Filename to save the model / 24.05.29 @jiho264
 # Logging arguments to a file
 log_file="logs/W${n_bits_w}A${n_bits_a}_calib${num_samples}_batch${batch_size}_iterW${iters_w}/${arch}/${filename}_fromPTH.log"
 # Clear the log file
